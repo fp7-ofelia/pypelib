@@ -97,7 +97,7 @@ class RegexParser():
 						if not strings:
 							raise Exception("Error while parsing Rule in field Condition. Substrings")
 						
-						return Condition(match.group(2),Collection(Get_Items(strings)),"in", negate )
+						return Condition(match.group(2),Collection(strings),"in", negate )
 					else:
 						#is range
 						submatch = re.match(r'[\s]*(\[|\{)[\s]*(.*)[\s]*,[\s]*(.*)[\s]*(\]|\})[\s]*',match.group(5))

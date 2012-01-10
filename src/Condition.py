@@ -22,19 +22,17 @@ _operators = _comparisonOperators + _logicalOperators + _rangeOperators + _colle
 class Collection(list):
 
 	def __init__(self,coll):
-		self.append(coll)
-		
+		self += coll
 			
 	@staticmethod
 	def isCollection(x):
 		return isinstance(x,Collection) 
 	
 	def __str__(self):
-#		toReturn=""	
-#		for item in self:
-#			toReturn+=str(item)
-#		return toReturn
-		return Get_Items(self)		
+		toReturn=""	
+		for item in self:
+			toReturn+=str(item)
+		return toReturn
 
 '''Range inner class'''
 class Range():
@@ -58,9 +56,10 @@ class Range():
 		return urange.lowerLimit < x < urange.upperLimit
 	
 	def __init__(self,upper,lower):
+		#XXX: Should we check upper> lower
 		self.upperLimit = upper
 		self.lowerLimit = lower
-#PREGUNTA: se deberia validar que upperLimit sea mayor que lowerLimit
+
 	
 	def __str__(self):
 	#	return "(%s,%s)"%(str(self.lowerLimit),str(self.upperLimit))

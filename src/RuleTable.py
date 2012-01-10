@@ -12,7 +12,7 @@ from threading import Thread, Lock
 '''
 from resolver.Resolver import Resolver 
 from Rule import Rule,TerminalMatch
-from parser.ParseEngine import *
+from parsing.ParseEngine import *
 from persistence.PersistenceEngine import *
 
 class RuleTable():
