@@ -14,35 +14,6 @@ import uuid
 from Condition import Condition
 from persistence.PersistenceEngine import PersistenceEngine
 
-'''
-def setType(terminal, value):
-	
-	if terminal == 'terminal':
-		boolTerminal = True
-	else: 
-		boolTerminal = False
-	if value == 'accept':
-                boolValue = True
-        else:
-                boolValue = False
-
-
-        ruletype = {'value':boolValue ,'terminal':boolTerminal}
-
-        if ruletype == Rule.POSITIVE_TERMINAL:
-                return Rule.POSITIVE_TERMINAL
-
-        elif ruletype == Rule.NEGATIVE_TERMINAL:
-                return Rule.NEGATIVE_TERMINAL
-
-        elif ruletype == Rule.POSITIVE_NONTERMINAL:
-               return Rule.POSITIVE_NONTERMINAL
-
-        elif ruletype == Rule.NEGATIVE_NONTERMINAL:
-               return Rule.NEGATIVE_NONTERMINAL
-'''
-
-
 class TerminalMatch(exceptions.Exception):
 	value = None
 	desc = None
