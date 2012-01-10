@@ -6,6 +6,10 @@ import exceptions
 from src.RuleTable import RuleTable
 from VM import VM
 
+
+#OLD
+#------------------------
+
 vm1 = VM('MyVM',512,2048,'Ubuntu',10.0,'AC-AC-AC-AC-AC-AC','192.168.1.127')
 vm2 = VM('MyVM2',1024,4096,'Ubuntu',11.04,'BC-BC-BC-BC-BC-BC','192.168.1.127')
 metaObj = vm1.dump()
@@ -24,3 +28,16 @@ rule2 = 'In Table1 with disabled state if vm.HDD > 2048 then deny do vm.OS  deny
 Table1.addRule(rule)
 
 Table1.dump()
+#old..........
+
+#Simulating throwing first query to the interface
+
+interface(ope)
+
+#Throwing second query
+
+#Adding a rule & throwing first query again
+
+#Dumping ruleTable
+MyPolicyEngine.dump()
+

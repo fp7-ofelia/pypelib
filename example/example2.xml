@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rspec xmlns="http://www.example.com/rspec">
+<action type="start" id="id1">
+	<vm>
+		<name>myName</name>
+	</vm>
+</action>
+</rspec>

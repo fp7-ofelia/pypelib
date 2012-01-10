@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rspec xmlns="http://www.example.com/rspec">
+<action type="create" id="id1">
+	<vm>
+		<name>myName</name>
+		<ram>256</ram>
+		<hdd>hd.img</hdd>
+		
+	</vm>
+</action>
+</rspec>
