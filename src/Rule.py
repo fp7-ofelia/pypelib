@@ -14,6 +14,7 @@ import uuid
 from Condition import Condition
 from persistence.PersistenceEngine import PersistenceEngine
 
+'''
 def setType(terminal, value):
 	
 	if terminal == 'terminal':
@@ -39,7 +40,7 @@ def setType(terminal, value):
 
         elif ruletype == Rule.NEGATIVE_NONTERMINAL:
                return Rule.NEGATIVE_NONTERMINAL
-
+'''
 
 
 class TerminalMatch(exceptions.Exception):
@@ -136,21 +137,6 @@ class Rule():
 				raise TerminalMatch(self._type,self._errorMsg)
 		#return whatever	
 		return
-
-	def splitType(self):
-
-		dic = self.getType()
-                if dic['value']:
-                        toReturnValue = 'accept'
-                else:
-                        toReturnValue = 'deny'
-
-                if dic['terminal']:
-                        toReturnTerminal = 'terminal'
-                else:
-                        toReturnTerminal = 'non-terminal'
-
-                return toReturnValue, toReturnTerminal
 
 	def getConditionDump(self):
 		return self.getCondition().dump()

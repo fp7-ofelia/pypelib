@@ -1,0 +1,39 @@
+import os
+import sys
+import time
+try:
+   import cPickle as pickle
+except:
+   import pickle
+from threading import Thread, Lock
+
+
+class RAWFile():
+	_mutex = Lock()
+	@staticmethod
+	def save(obj, parser, **kwargs):
+		if not kwargs["fileName"]:
+			raise Exception("FileName is required")
+			
+		with RAWFile._mutex:
+			fileObj = open(kwargs["fileName"], "wb" )
+			pickle.dump(obj,fileObj)
+			fileObj.close()
+			
+	
+	@staticmethod
+	def load(tableName, parser, **kwargs):
+		if not kwargs["fileName"]:
+			raise Exception("FileName is required")
+				
+		fileObj = open(kwargs["fileName"], "r" )
+		table = pickle.load(fileObj)
+		fileObj.close()
+			
+		if table.name != tableName:
+			raise Exception("Table name mismatch; did you specify the correct file?")
+		return table
+
+
+
+			

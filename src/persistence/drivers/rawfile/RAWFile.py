@@ -43,53 +43,6 @@ class RAWFile():
 			File.close()
 
 	@staticmethod
-	def findRuleTable(obj):
-		File = open('src/persistence/drivers/rawFile/RuleTableFile.dat','r+')
-#		while True:
-#			text = File.readline()
-#			if str(text) == str(obj.uuid)+'\n':
-#				text = File.readline()
-#                        	File.write(obj.name)
-#                        	File.write('\n#Mappings:\n')
-#                        	File.write(str(obj._mappings))
-#                        	File.write('\n#Parser:\n')
-#                        	File.write(obj._defaultParser)
-#                        	File.write('\n#Persistence:\n')
-#                      	 	File.write(obj._defaultPersistence)
-#                        	File.write('\n#PersistenceFlag:\n')
-#                        	File.write(str(obj._defaultPersistenceFlag))
-#                        	File.write('\n#PolicyType:\n')
-#                        	File.write(str(obj._policy))
-#                        	File.write('\n$$$$$')
-#                        	File.write('\n#RuleSet:\n')
-#				File.write(RAWFile.setRuleSet(str(dumps(obj._ruleSet))))
-#                        	File.write('\n#####\n')
-#                        	File.close()
-#				return True
-#			elif text == "":
-#				File.close()
-#				return 	False
-	
-		i = 0
-		lst = File.readlines()
-		File.seek(0)
-		while i < len(lst):
-			if lst[i] == str(obj.uuid) + '\n':
-				lst[i+2] = str(obj.name) + '\n'
-				lst[i+4] = str(obj._mappings) + '\n'
-				lst[i+6] = str(obj._defaultParser) + '\n'
-				lst[i+8] = str(obj._defaultPersistence) + '\n'
-				lst[i+10] = str(obj._defaultPersistenceFlag) + '\n'
-				lst[i+12] = str(obj._policy) + '\n'
-				lst[i+15] = RAWFile.setRuleSet(str(dumps(obj._ruleSet))) + '\n'
-				File.writelines(lst)
-				File.truncate()
-				File.close()
-				return True
-			i += 1
-		File.close()
-		return False
-	@staticmethod
 	def loadRuleTable(tableName):
 		File = open('src/persistence/drivers/rawFile/RuleTableFile.dat','r')
 		auxFile = open('src/persistence/drivers/rawFile/RuleTableFile.dat','r')
