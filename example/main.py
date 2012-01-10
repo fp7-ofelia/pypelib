@@ -3,7 +3,7 @@ import sys
 import time
 import exceptions
 
-from pypelib.src.RuleTable import RuleTable
+from src.RuleTable import RuleTable
 from VM import VM
 
 vm1 = VM('MyVM',512,2048,'Ubuntu',10.0,'AC-AC-AC-AC-AC-AC','192.168.1.127')

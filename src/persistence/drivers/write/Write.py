@@ -3,7 +3,7 @@ import sys
 import time
 from cPickle import loads, dumps
 
-from RuleTable import RuleTable
+from src.RuleTable import RuleTable
 
 
 class Write():
@@ -14,13 +14,13 @@ class Write():
 	@staticmethod
 	def saveRuleTable(obj):
 
-		File = open('persistence/drivers/write/RuleTableFile.dat','a')
+		File = open('src/persistence/drivers/write/RuleTableFile.dat','a')
 		File.close()
 		if Write.findRuleTable(obj):
 			File.close()
 			return	
 		else:
-			File = open('persistence/drivers/write/RuleTableFile.dat','a')
+			File = open('src/persistence/drivers/write/RuleTableFile.dat','a')
 			File.write('#uuid:\n')
 	                File.write(obj.uuid)
 			File.write('\n#Name:\n')
@@ -44,7 +44,7 @@ class Write():
 
 	@staticmethod
 	def findRuleTable(obj):
-		File = open('persistence/drivers/write/RuleTableFile.dat','r+')
+		File = open('src/persistence/drivers/write/RuleTableFile.dat','r+')
 #		while True:
 #			text = File.readline()
 #			if str(text) == str(obj.uuid)+'\n':
@@ -91,8 +91,8 @@ class Write():
 		return False
 	@staticmethod
 	def loadRuleTable(tableName):
-		File = open('persistence/drivers/write/RuleTableFile.dat','r')
-		auxFile = open('persistence/drivers/write/RuleTableFile.dat','r')
+		File = open('src/persistence/drivers/write/RuleTableFile.dat','r')
+		auxFile = open('src/persistence/drivers/write/RuleTableFile.dat','r')
 		EntireFile = auxFile.readlines()
 		auxFile.close()
 		lst = []
@@ -125,7 +125,7 @@ class Write():
 
 	@staticmethod
 	def loadRuleSet(obj):
-		File = open('persistence/drivers/write/RuleTableFile.dat','r')
+		File = open('src/persistence/drivers/write/RuleTableFile.dat','r')
 		
 		ruleSet = ""
 		text = ""

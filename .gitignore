@@ -1,5 +1,8 @@
-#Compiles sources
-
+#Compiled sources
 *.pyc
+
+#Swap files
 *.swp
 
+#DB file
+*.dat
