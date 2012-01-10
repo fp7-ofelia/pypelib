@@ -8,7 +8,6 @@ import time
 	PolicyEngine Condition class
 	Encapsulates logic of a simple condition	 
 '''
-from List_Splitter import* 
 
 '''Supported operators'''
 _collectionOperators= ["in"]
@@ -22,17 +21,12 @@ _operators = _comparisonOperators + _logicalOperators + _rangeOperators + _colle
 class Collection(list):
 
 	def __init__(self,coll):
-		self += coll
+		self +=coll
 			
 	@staticmethod
 	def isCollection(x):
 		return isinstance(x,Collection) 
 	
-	def __str__(self):
-		toReturn=""	
-		for item in self:
-			toReturn+=str(item)
-		return toReturn
 
 '''Range inner class'''
 class Range():
@@ -47,6 +41,7 @@ class Range():
 	def isInRange(x,urange):
 		if not Range.isRange(urange):
 			raise Exception("Unknown data type; must be a Range instance")
+		print "DEBUG: "+str(urange.lowerLimit)+ " "+ str(x) +" "+str(urange.upperLimit)
 		return urange.lowerLimit <= x <= urange.upperLimit
 	
 	@staticmethod
@@ -55,15 +50,17 @@ class Range():
 			raise Exception("Unknown data type; must be a Range instance")
 		return urange.lowerLimit < x < urange.upperLimit
 	
-	def __init__(self,upper,lower):
-		#XXX: Should we check upper> lower
+	def __init__(self,lower,upper):
+		if int(upper)<int(lower):
+			raise Exception("Cannot create Range; upper limit must be equal or higher that lower limit")
+		
 		self.upperLimit = upper
 		self.lowerLimit = lower
 
 	
 	def __str__(self):
 	#	return "(%s,%s)"%(str(self.lowerLimit),str(self.upperLimit))
-		return "%s,%s"%(str(self.upperLimit),str(self.lowerLimit))
+		return "%s,%s"%(str(self.lowerLimit),str(self.upperLimit))
 '''Condition class'''
 class Condition():
 	
@@ -169,7 +166,7 @@ class Condition():
 				leftValue =  self._leftOperand
 	
 		#Adjusting types
-		if type(rightValue) != type(leftValue):
+		if (type(rightValue) != type(leftValue)) and (self._operator not in _rangeOperators ) and (self._operator not in _collectionOperators):
 			leftValue = type(rightValue)(leftValue)
 		
 		#Perform comparison and return value
@@ -200,9 +197,4 @@ class Condition():
 
 
 
-#Unit testing
-#print _operators
-#a = Condition("5","6","<")
-#b = Condition("5","6",">")
-#c = Condition(a,b,"||",True)
-#print  "Result: "+str(c.evaluate(None,None))
+
