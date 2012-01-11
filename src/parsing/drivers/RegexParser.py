@@ -1,9 +1,10 @@
 import os
 import sys
 import time
-import uuid
 
+sys.path.append("../../") 
 import re
+from pyparsing import nestedExpr
 
 '''
         @author: msune
@@ -11,16 +12,12 @@ import re
 	RegexParser class
 '''
 
-
-#from Rule import *
 from Rule import *
 from Condition import *
-from ConditionGetter import*
-#from Condition import *
 
 '''RegexParser class'''
 class RegexParser():
-	
+
 	_rValues=["accept","deny"] #Must be lowercase
 
 	def __init__(self):
@@ -48,39 +45,119 @@ class RegexParser():
 				return string
 	
 	@staticmethod
-	def stripExtraParenthesis(string):
-		#TODO: implement if we want to support extra(outter) parenthesis; e.g. if (A>B) then ... 
-		return string	
+	def _stripExtraParenthesis(s):
+		
+		try:
+			if s.count("(") != s.count(")"):
+				raise Exception("Cannot parse condition")
+
+			toStrip=0
+			el = nestedExpr('(', ')').searchString(s).asList()
+			
+			if len(el) >1:
+				raise Exception("non-strippable")
+
+			def _countExtraParenthesis(el):
+				if len(el) == 1 and isinstance(el[0],list):
+					return 1+_countExtraParenthesis(el[0])
+				return 0	
+			toStrip+=_countExtraParenthesis(el[0])	
+
+			for it in range(0,toStrip):
+				match = re.match(r'[\s]*\((?P<inner>.+)\)[\s]*',s)
+				s = match.group("inner")
+			
+		except Exception as e:
+			pass
+		return s 
+	
+		'''
+		print "Trying to strip: "+string
+		#Detect outter parenthesis and strip
+		try:
+			match = re.match(r'[\s]*\([\s]*(?P<inner>\(.+\))[\s]*\)[\s]*\Z', string,re.IGNORECASE)
+			#Quick and dirty way of detecting outter parenthesis in complex conditions
+			print "Checking stripping on complex..."
+			counter = 0
+			validStripping=False
+			print "Stripped text:"+match.group("inner")
+			for iterator in range(0,len(match.group("inner"))-1):
+				print "it:"+str(iterator)+" counter:"+str(counter)
+				if match.group("inner")[iterator] == '(':
+					counter+=1
+				elif match.group("inner")[iterator] == ')':
+					counter-=1
+				if counter==0 and  ( match.group("inner")[iterator] == '&' and match.group("inner")[iterator+1] == '&' ):
+					print "it: "+str(iterator)
+					validStripping = True
+					break	
+				elif counter==0 and (  match.group("inner")[iterator] == '|' and match.group("inner")[iterator+1] == '|' ):
+					print "it2: "+str(iterator)
+					validStripping = True
+					break
+			print "Value of validStripping: "+str(validStripping)	
+			if validStripping:	
+				return match.group("inner")
+		except Exception as e:
+			print e
+			pass
+		#in case of a simple condition also strip
+		try:
+			match = re.match(r'[\s]*\([\s]*(?P<inner>[^\(]+)[\s]*\)[\s]*\Z', string,re.IGNORECASE)
+			return match.group("inner")
+		except Exception as e:
+			pass
+		return string
+		'''	
 
 	@staticmethod
-	def _parseCondition(conditionString):
-		#Detect complex condition (Boolean) 
-	
-		#match = re.match(r'[\s]*(not)?[\s]*\((.+)\)[\s]*(&&|\|\|)[\s]*\((.+)\)[\s]*', conditionString,re.IGNORECASE)
-		#match = re.match(r'[\s]*(not)?[\s]*\((.+)\)[\s]*(&&|\|\|)[\s]*(not)?[\s]*\((.+)\)[\s]*',conditionString,re.IGNORECASE)
-		
-		match = re.match(r'[\s]*(not)?[\s]*\(*(.+)\)*[\s]*(&&|\|\|)[\s]*(not)?[\s]*\(*(.+)\)*[\s]*',conditionString,re.IGNORECASE)
-		
-
+	def _parseComplexCond(string):
+		#In case of complex condition it will always be, as it is stripped, (something) 
+		#re has some limitations on this
+		match = re.match(r'[\s]*(not)?[\s]*\((?P<left>.+)\)[\s]*(?P<operand>&&|\|\|)[\s]*\((?P<right>.+)\)[\s]*\Z', string,re.IGNORECASE)
+		neg="" 
 		if match:
-			Complex_Condition = Split_Complex_Condition(match.group())
+			neg=match.group(1) != None
+			counter = 0			 
+			#Complex cond
+			for iterator in range(0,len(string)-1):
+				if string[iterator] == '(':
+					counter+=1
+				elif string[iterator] == ')':
+					counter-=1
+				if counter== 0 and  ( string[iterator] == '&' and string[iterator+1] == '&' ):
+					return "&&", string[0:iterator], string[iterator+2:len(string)],neg
+				elif counter == 0 and (  string[iterator] == '|' and string[iterator+1] == '|' ):
+					return "||", string[0:iterator], string[iterator+2:len(string)],neg
+			
+			
+		return None,None,None,None
 
-			return Condition(RegexParser._parseCondition(Complex_Condition[0]),RegexParser._parseCondition(Complex_Condition[1]),Complex_Condition[2],match.group(1) != None)
-			#return Condition(RegexParser._parseCondition(match.group(2)),RegexParser._parseCondition(match.group(4)),match.group(3),match.group(1) != None)
+ 
+	@staticmethod
+	def _parseCondition(string):
+		#first strip extra parenthesis if any
+		conditionString = RegexParser._stripExtraParenthesis(string)
+		#Detect complex condition (Boolean) 
+		op,leftOP,rightOP,neg = RegexParser._parseComplexCond(conditionString)
+		
+		if op:
+			#print "---->Value neg:"+str(neg)+ " left: "+leftOP+"right: "+rightOP+" op:"+op
+			return Condition(RegexParser._parseCondition(leftOP),RegexParser._parseCondition(rightOP),op,neg)
 		else:
 			#Simple conditions
-			match = re.match(r'[\s]*(not )?[\s]*([^()\s]+)[\s]*(=|!=|>|<|>=|<=)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
+			match = re.match(r'[\s]*(not)?[\s]*([^()\s]+)[\s]*(=|!=|>|<|>=|<=)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
 			if match:
 				return Condition(RegexParser._getNumericValue(match.group(2)),match.group(4),RegexParser._getNumericValue(match.group(3)),match.group(1) != None)	
 			else:
 				#Ranges and collections
-				match = re.match(r'[\s]*(not )?[\s]*(\w+)[\s]+(in|not[\s]+in)[\s]+(collection|range)[\s]*(\{(.+)\}|\[(.+)\])[\s]*', conditionString,re.IGNORECASE)
+				match = re.match(r'[\s]*(not)?[\s]*(\w+)[\s]+(in|not[\s]+in)[\s]+(collection|range)[\s]*(\{(.+)\}|\[(.+)\])[\s]*', conditionString,re.IGNORECASE)
 				if match:
 					negate = None
 					if re.match(r'[\s]*\[(.*)]',match.group(5)):
 						operator="[]"
 						if match.group(4).lower() == "collection":
-							raise Exception("Error while parsing Rule in field Condition. Unknown operator/collection")
+							raise Exception("Error while parsing Rule(Condition). Unknown operator/collection")
 					else:
 						operator="{}"
 						negate= match.group(1)!=None or match.group(3).lower().find("not") != -1
@@ -90,28 +167,32 @@ class RegexParser():
 						submatch = re.match(r'[\s]*\{[\s]*(.*)[\s]*\}',match.group(5))
 							
 						if not submatch:
-							raise Exception("Error while parsing Rule in field Condition. Unknown Operator")
-					#	strings = re.findall(r'[\s]*([^,]+)[\s]*,',submatch.group(1))
-						strings = re.findall(r'[\s]*([^,]+)[\s]*',submatch.group(1))
+							raise Exception("Error while parsing Rule(Condition).")
+						strings = re.findall(r'[\s]*([^,]+)[\s]*,',submatch.group(1))
 						
 						if not strings:
-							raise Exception("Error while parsing Rule in field Condition. Substrings")
+							raise Exception("Error while parsing Rule(Condition). Substrings")
+						
+						print "Will generate Condition: %s %s %s (%s)" %(str(match.group(2)),"in",str(Collection(strings)), str(negate))
 						
 						return Condition(match.group(2),Collection(strings),"in", negate )
 					else:
 						#is range
 						submatch = re.match(r'[\s]*(\[|\{)[\s]*(.*)[\s]*,[\s]*(.*)[\s]*(\]|\})[\s]*',match.group(5))
 						if not submatch:
-							raise Exception("Error while parsing Rule in field Condition.")
+							raise Exception("Error while parsing Rule(Condition).")
 						
+						print "Will generate Condition: %s %s %s (%s)"%(str(match.group(2)),str(operator),Range(submatch.group(2),submatch.group(3)), str(negate))
+					
 						return Condition(match.group(2),Range(submatch.group(2),submatch.group(3)),operator, negate)
-		raise Exception("Error while parsing Rule in field Condition. Unknown Operator.")
+		raise Exception("Error while parsing Rule(Condition)")
 			
 	@staticmethod
-	def parseRule(toParse,rule_uuid=None):
+	def parseRule(toParse):
 		
 		#Extracting basics of the rule	
 		match = re.match(r'[\s]*if[\s]+(?P<condition>.+)[\s]+then[\s]+(?P<rValue>\w+)[\s]+(?P<term>nonterminal)?[\s]*(?P<do>do)?[\s]*(?P<action>[^#\s]+)[\s]([\s]*denyMessage([\s])*(?P<errorMsg>[^#]+))?([\s]*#([\s]*)(?P<comment>.+))?[\s]*', toParse,re.IGNORECASE)
+		
 		if not match:
 			raise Exception("Error while parsing Rule.") 
 	
@@ -119,12 +200,11 @@ class RegexParser():
 		if match.group("rValue").lower() not in RegexParser._rValues:
 			raise Exception("Error while parsing Rule. Unknown Rule value")
 		
-		cond = RegexParser._parseCondition(RegexParser.stripExtraParenthesis(match.group("condition")))
+		cond = RegexParser._parseCondition(match.group("condition"))
 		
 		description=RegexParser._getGroupByName(match,"comment")
-		term=RegexParser._getGroupByName(match,"term")#.lower()
+		term=RegexParser._getGroupByName(match,"term").lower()
 		error=RegexParser._getGroupByName(match,"errorMsg")
-		UUID = uuid.uuid4()	
 	
 		if match.group("rValue").lower() == "accept":
 			if  term == "nonterminal":
@@ -136,22 +216,19 @@ class RegexParser():
 				rType = Rule.NEGATIVE_NONTERMINAL
 			else:
 				rType = Rule.NEGATIVE_TERMINAL
-
-		
 		
 		return Rule(cond,
 			description,
 			error,
 			rType,
-			RegexParser._getGroupByName(match,"action"),
-			rule_uuid,
+			RegexParser._getGroupByName(match,"action")	
 			)	
 
 
 
 	#Crafter must be independent of the Rule representation via dump()
 	@staticmethod
-	def craftCondition(cond):
+	def _craftCondition(cond):
 		string = ""
 		operator=""
 
@@ -160,22 +237,22 @@ class RegexParser():
 		
 		if isinstance(cond.getLeftOperand(),Condition):
 			#Complex condition (boolean)
-			left = RegexParser.craftCondition(cond.getLeftOperand())
-			right = RegexParser.craftCondition(cond.getRightOperand())
+			left = RegexParser._craftCondition(cond.getLeftOperand())
+			right = RegexParser._craftCondition(cond.getRightOperand())
 			
 			string += "(%s) %s (%s)"%(left,cond.getOperator(),right)
 			return string 
 		else:
 			#Simple condition
-			if cond.getOperator() == "[]" or cond.getOperator() == "{}":
+			if cond.getOperator == "[]" or cond.getOperator() == "{}":
 				#Range
 				if not cond.getOperator == "[]":
-					string+="%s %s {%s}"%(cond.getLeftOperand(),"in Range",cond.getRightOperand())
+					string+="%s %s {%s}"%(cond.getLeftOperand(),"in range",cond.getRightOperand())
 				else:
-					string+="%s %s [%s]"%(cond.getLeftOperand(),"in Range",cond.getRightOperand())		
+					string+="%s %s [%s]"%(cond.getLeftOperand(),"in range",cond.getRightOperand())		
 						
 				return string 
-			elif cond.getOperator() == "in":
+			elif cond.getOperator == "in":
 				#Collection	
 				string+="%s %s {%s}"%(cond.getLeftOperand(),"in collection",cond.getRightOperand())		
 				return string 
@@ -185,8 +262,7 @@ class RegexParser():
 
 	@staticmethod
 	def craftRule(rule):
-		  
-		string  = " if %s then " %(RegexParser.craftCondition(rule.getCondition()))
+		string  = "if %s then " %(RegexParser._craftCondition(rule.getCondition()))
 		#rValue
 		if rule.getType()["value"]:
 			string+="accept "
@@ -205,64 +281,23 @@ class RegexParser():
 		if rule.getDescription():
 			string+="#%s "%rule.getDescription()
 
-		return string 
-
-	''' Rule Class Getters '''
-	
-        @staticmethod
-	def getRuleCondition(rule):
-		return rule.getCondition()
-
-	@staticmethod
-	def getRuleType(rule):		
-		dic = rule.getType()
-		if dic['value']:
-			toReturnValue = 'accept'
-		else:
-			toReturnValue = 'deny'
-
-		if dic['terminal']:
-			toReturnTerminal = 'terminal'
-		else:
-			toReturnTerminal = 'non-terminal'
-	
-		return toReturnValue, toReturnTerminal
-
-	@staticmethod
-	def getRuleError(rule):
-		return rule.getErrorMsg()
-
-	@staticmethod
-	def getRuleDescription(rule):
-		return rule.getDescription()
-
-	@staticmethod
-	def getRuleAction(rule):
-		return rule.getMatchAction()
-
-	@staticmethod
-	def getRuleDump(rule):
-		return rule.dump()
-
-	''' Condition Class Getters '''
-	@staticmethod
-	def getCondition(rule):
-		return rule.getCondition()
-	
-	@staticmethod
-	def getConditionLeftOperand(rule):
-		return rule.getCondition().getLeftOperand()
-
-	@staticmethod
-	def getConditionRightOperand(rule):
-		return rule.getCondition().getRightOperand()
-
-	@staticmethod
-	def getConditionOperator(rule):
-		return rule.getCondition().getOperator()
-
-	@staticmethod
-	def getConditionDump(rule):
-		return rule.getCondition().dump()
+		return string
 
 
+#parser.parseCondition("A not      in collection  {B}")
+#parser.parseCondition("A!=B")
+#parser.parseRule(" if  not A in collection {2,3,4}  then accept term do C # dd")
+#rule = parser.parseRule(" if  not a>5   then accept term do something denyMessage ksdfkdfskf # comment")
+#rule = RegexParser.parseRule(" if ( not a>5 ) then accept nonterminal do something denyMessage ksdfkdfskf # comment")
+#print rule.dump()
+#rule = RegexParser.parseRule(" if  not a>5  then accept nonterminal do something denyMessage ksdfkdfskf # comment")
+
+#print rule.dump()
+
+#rule = RegexParser.parseRule(" if  ( (a>5) && (B = 5)) && ((a<4)&&(b!=5))   then accept nonterminal do something denyMessage ksdfkdfskf # comment")
+#print rule.dump()
+
+#rule = RegexParser.parseRule(" if   ( (( (a>5) && (B = 5)) || (a=b) ) && ((a<4)&&(b!=5)))   then accept nonterminal do something denyMessage ksdfkdfskf # comment")
+#print rule.dump()
+
+#print RegexParser.craftRule(rule)
