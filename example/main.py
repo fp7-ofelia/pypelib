@@ -4,8 +4,10 @@ import time
 import exceptions
 import time
 
-from src.RuleTable import RuleTable
+sys.path.append("../src/") 
 
+from RuleTable import RuleTable
+from MyPolicyEngine import MyPolicyEngine
 
 print "Dumping inital table state..."
 MyPolicyEngine.dump()

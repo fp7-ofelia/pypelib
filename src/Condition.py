@@ -80,11 +80,7 @@ class Condition():
 		return self._leftOperand
 	def getRightOperand(self):
 		#return self._rightOperand
-		if self.getOperator() == "in":
-
-			return Get_Items(self._rightOperand)
-		else: 
-			return self._rightOperand
+		return self._rightOperand
 
 	#Constructor
 	def __init__(self, left, right, operator,negate=False):

@@ -120,7 +120,7 @@ class RegexParser():
 							raise Exception("Error while parsing Rule(Condition). Unknown operator/collection")
 					else:
 						operator="{}"
-						negate= match.group(1)!=None or match.group(3).lower().find("not") != -1
+					negate= match.group(1)!=None or match.group(3).lower().find("not") != -1
 						
 					if match.group(4).lower() == "collection":
 						#is collection
@@ -128,12 +128,12 @@ class RegexParser():
 							
 						if not submatch:
 							raise Exception("Error while parsing Rule(Condition).")
-						strings = re.findall(r'[\s]*([^,]+)[\s]*,',submatch.group(1))
+						strings = submatch.group(1).split(",")
 						
 						if not strings:
 							raise Exception("Error while parsing Rule(Condition). Substrings")
 						
-						print "Will generate Condition: %s %s %s (%s)" %(str(match.group(2)),"in",str(Collection(strings)), str(negate))
+						#print "Will generate Condition: %s %s %s (%s)" %(str(match.group(2)),"in",str(Collection(strings)), str(negate))
 						
 						return Condition(match.group(2),Collection(strings),"in", negate )
 					else:
@@ -142,7 +142,7 @@ class RegexParser():
 						if not submatch:
 							raise Exception("Error while parsing Rule(Condition).")
 						
-						print "Will generate Condition: %s %s %s (%s)"%(str(match.group(2)),str(operator),Range(submatch.group(2),submatch.group(3)), str(negate))
+						#print "Will generate Condition: %s %s %s (%s)"%(str(match.group(2)),str(operator),Range(submatch.group(2),submatch.group(3)), str(negate))
 					
 						return Condition(match.group(2),Range(submatch.group(2),submatch.group(3)),operator, negate)
 		raise Exception("Error while parsing Rule(Condition)")
@@ -151,7 +151,8 @@ class RegexParser():
 	def parseRule(toParse):
 		
 		#Extracting basics of the rule	
-		match = re.match(r'[\s]*if[\s]+(?P<condition>.+)[\s]+then[\s]+(?P<rValue>\w+)[\s]+(?P<term>nonterminal)?[\s]*(?P<do>do)?[\s]*(?P<action>[^#\s]+)[\s]([\s]*denyMessage([\s])*(?P<errorMsg>[^#]+))?([\s]*#([\s]*)(?P<comment>.+))?[\s]*', toParse,re.IGNORECASE)
+		#match = re.match(r'[\s]*if[\s]+(?P<condition>.+)[\s]+then[\s]+(?P<rValue>\w+)[\s]+(?P<term>nonterminal)?[\s]*(?P<do>do)?[\s]*(?P<action>[^#\s]+)[\s]([\s]*denyMessage([\s])*(?P<errorMsg>[^#]+))?([\s]*#([\s]*)(?P<comment>.+))?[\s]*', toParse,re.IGNORECASE)
+		match = re.match(r'[\s]*if[\s]+(?P<condition>.+)[\s]+then[\s]+(?P<rValue>\w+)[\s]*(?P<term>nonterminal)?[\s]*(do[\s]+(?P<action>[^#\s]+))?[\s]*(denyMessage[\s]+(?P<errorMsg>[^#]+))?[\s]*(#[\s]*(?P<comment>.+))?[\s]*', toParse,re.IGNORECASE)
 		
 		if not match:
 			raise Exception("Error while parsing Rule.") 
@@ -163,20 +164,22 @@ class RegexParser():
 		cond = RegexParser._parseCondition(match.group("condition"))
 		
 		description=RegexParser._getGroupByName(match,"comment")
-		term=RegexParser._getGroupByName(match,"term").lower()
+		term=RegexParser._getGroupByName(match,"term")
 		error=RegexParser._getGroupByName(match,"errorMsg")
 	
 		if match.group("rValue").lower() == "accept":
-			if  term == "nonterminal":
+			if  term and term.lower() == "nonterminal":
 				rType = Rule.POSITIVE_NONTERMINAL
 			else:
 				rType = Rule.POSITIVE_TERMINAL
-		else:
-			if  term == "nonterminal":
+		elif match.group("rValue").lower() == "deny":
+			if  term and term.lower() == "nonterminal":
 				rType = Rule.NEGATIVE_NONTERMINAL
 			else:
 				rType = Rule.NEGATIVE_TERMINAL
 		
+		else:
+			raise Exception("Unknown return value")
 		return Rule(cond,
 			description,
 			error,
@@ -204,17 +207,24 @@ class RegexParser():
 			return string 
 		else:
 			#Simple condition
-			if cond.getOperator == "[]" or cond.getOperator() == "{}":
+			if cond.getOperator() == "[]" or cond.getOperator() == "{}":
 				#Range
-				if not cond.getOperator == "[]":
+				if not cond.getOperator() == "[]":
 					string+="%s %s {%s}"%(cond.getLeftOperand(),"in range",cond.getRightOperand())
 				else:
 					string+="%s %s [%s]"%(cond.getLeftOperand(),"in range",cond.getRightOperand())		
 						
 				return string 
-			elif cond.getOperator == "in":
+			elif cond.getOperator() == "in":
 				#Collection	
-				string+="%s %s {%s}"%(cond.getLeftOperand(),"in collection",cond.getRightOperand())		
+				string+="%s %s {"%(cond.getLeftOperand(),"in collection")
+				it=0
+				for item in cond.getRightOperand():
+					string +=item
+					if it+1 != len(cond.getRightOperand()):
+						 string+=","
+					it+=1
+				string +="}"
 				return string 
 			else:
 				string+="%s %s %s"%(cond.getLeftOperand(),cond.getOperator(),cond.getRightOperand())		
@@ -244,20 +254,4 @@ class RegexParser():
 		return string
 
 
-#parser.parseCondition("A not      in collection  {B}")
-#parser.parseCondition("A!=B")
-#parser.parseRule(" if  not A in collection {2,3,4}  then accept term do C # dd")
-#rule = parser.parseRule(" if  not a>5   then accept term do something denyMessage ksdfkdfskf # comment")
-#rule = RegexParser.parseRule(" if ( not a>5 ) then accept nonterminal do something denyMessage ksdfkdfskf # comment")
-#print rule.dump()
-#rule = RegexParser.parseRule(" if  not a>5  then accept nonterminal do something denyMessage ksdfkdfskf # comment")
 
-#print rule.dump()
-
-#rule = RegexParser.parseRule(" if  ( (a>5) && (B = 5)) && ((a<4)&&(b!=5))   then accept nonterminal do something denyMessage ksdfkdfskf # comment")
-#print rule.dump()
-
-#rule = RegexParser.parseRule(" if   ( (( (a>5) && (B = 5)) || (a=b) ) && ((a<4)&&(b!=5)))   then accept nonterminal do something denyMessage ksdfkdfskf # comment")
-#print rule.dump()
-
-#print RegexParser.craftRule(rule)

@@ -11,9 +11,10 @@ from threading import Thread, Lock
 
 class RAWFile():
 	_mutex = Lock()
+
 	@staticmethod
 	def save(obj, parser, **kwargs):
-		if not kwargs["fileName"]:
+		if "fileName" not in kwargs:
 			raise Exception("FileName is required")
 			
 		with RAWFile._mutex:

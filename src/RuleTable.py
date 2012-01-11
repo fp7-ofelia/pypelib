@@ -29,7 +29,8 @@ class RuleTable():
 	_persist = None
 	_parser = None
 	_persistenceBackend = None
-	
+	_persistenceBackendParameters=None	
+
 	#Default table policy
 	_policy = None
 	_ruleSet = None 
@@ -38,7 +39,7 @@ class RuleTable():
 	_resolver = None
 	
 	#Constructor
-	def __init__(self,name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType = False, uuid = None):
+	def __init__(self,name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType = False, uuid = None,**kwargs):
 		if not isinstance(pType,bool):
 			raise Exception("Unknown default table policy")
 		self.uuid = uuid
@@ -50,9 +51,10 @@ class RuleTable():
 		self._persist = defaultPersistenceFlag
 		self._mappings = resolverMappings
 		self._ruleSet = list()
+		self._persistenceBackendParameters = kwargs
 
 		if self._persist: 
-			self.save()
+			self.save(self._persistenceBackend,**kwargs)
 
 		#Generate the resolver
 		self._resolver = Resolver(resolverMappings)
@@ -158,7 +160,11 @@ class RuleTable():
 	def save(self, pBackend=None,**kwargs):
 		if not pBackend:
 			pBackend = self._persistenceBackend
-		PersistenceEngine.saveRuleTable(self,pBackend,kwargs)
+		if not kwargs:
+			kwargs2 = self._persistenceBackendParameters
+		else:
+			kwargs2 = kwargs
+		PersistenceEngine.save(self,pBackend,**kwargs2)
 
 	#In general should not be called, use loadOrGenerate instead	
 	@staticmethod
@@ -166,13 +172,13 @@ class RuleTable():
 		return PersistenceEngine.loadRuleTable(tableName,pBackend,kwargs)
 	
 	@staticmethod
-	def loadOrGenerate(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType = False, uuid = None,**kwargs):
+	def loadOrGenerate(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType=False, uuid=None,**kwargs):
 		try:
-			return PersistenceEngine.loadRuleTable(tableName,pBackend,kwargs)
+			return PersistenceEngine.loadRuleTable(tableName,pBackend,defaultParser,**kwargs)
 		except Exception as e:
 			print "Unable to load RuleTable, generating a new one"
 
-		return RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,kwargs)
+		return RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,**kwargs)
 	
 	def getRuleSet(self):
 		return self._ruleSet
