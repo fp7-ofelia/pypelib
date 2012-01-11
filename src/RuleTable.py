@@ -134,14 +134,14 @@ class RuleTable():
 		print "NUmber of rules: "+str(len(self._ruleSet))
 		with self._mutex:
 			i=0
-			for rule in self._ruleSet:
+			for it in self._ruleSet:
 				print "[%s]:"%i +it.rule.dump()+ " Enabled: "+str(it.enabled)
 				i+=1
 		
 		print "Default policy: "+str(self._policy)
 
 	#Go through the table
-	def process(self,metaObj):
+	def evaluate(self,metaObj):
 		#Iterate over ruleset
 		with self._mutex:
 			for it in self._ruleSet:
@@ -177,24 +177,3 @@ class RuleTable():
 	def getRuleSet(self):
 		return self._ruleSet
 					
-
-#table = RuleTable("My table","fancyUUID",{"vm.memory":"metaObj['memory']","project.vms":"metaObj['vms']","project.string":"metaObj['string']"},True)
-#Adding dummy rule
-#from Condition import Condition
-#table.addRule(Rule(Condition("5","6","<"),"Description"))	
-
-	
-#table.addRule(Rule(Condition("vm.memory","2000",">"),"Memory", "Action forbbiden: You requested more that 2GB of RAM" ,Rule.NEGATIVE_TERMINAL))
-#table.addRule(Rule(Condition("project.vms","4",">="),"VMs","Action forbidden: you have 4 VMs already in the project",Rule.NEGATIVE_TERMINAL))
-#table.addRule(Rule(Condition("project.string","try","!="),"String","Action forbidden: String",Rule.NEGATIVE_TERMINAL))
-
-#table.dump()
-
-#metaObj = {"memory":2000,"vms":"3","string":"try2"}
-
-#Create the metaObj
-
-#try:
-#	table.process(metaObj)
-#except Exception as e:
-#	print e	

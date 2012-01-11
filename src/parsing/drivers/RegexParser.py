@@ -13,8 +13,8 @@ import re
 
 
 #from Rule import *
-from src.Rule import *
-from src.Condition import *
+from Rule import *
+from Condition import *
 from ConditionGetter import*
 #from Condition import *
 
@@ -108,7 +108,7 @@ class RegexParser():
 		raise Exception("Error while parsing Rule in field Condition. Unknown Operator.")
 			
 	@staticmethod
-	def parseRule(toParse,rule_uuid):
+	def parseRule(toParse,rule_uuid=None):
 		
 		#Extracting basics of the rule	
 		match = re.match(r'[\s]*if[\s]+(?P<condition>.+)[\s]+then[\s]+(?P<rValue>\w+)[\s]+(?P<term>nonterminal)?[\s]*(?P<do>do)?[\s]*(?P<action>[^#\s]+)[\s]([\s]*denyMessage([\s])*(?P<errorMsg>[^#]+))?([\s]*#([\s]*)(?P<comment>.+))?[\s]*', toParse,re.IGNORECASE)
@@ -266,12 +266,3 @@ class RegexParser():
 		return rule.getCondition().dump()
 
 
-#parser.parseCondition("A not      in collection  {B}")
-#parser.parseCondition("A!=B")
-#parser.parseRule(" if  not A in collection {2,3,4}  then accept term do C # dd")
-#rule = parser.parseRule(" if  not a>5   then accept term do something denyMessage ksdfkdfskf # comment")
-#rule = RegexParser.parseRule(" if  not (a>5) && (B = 5)   then accept nonterminal do something denyMessage ksdfkdfskf # comment")
-
-#print rule.dump()
-
-#print RegexParser.craftRule(rule)

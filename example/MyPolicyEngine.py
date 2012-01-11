@@ -27,7 +27,7 @@ class  MyPolicyEngine():
 			"vm.OS":"metaObj['OS']",
 			"vm.Version":"metaObj['Version']",
 			"vm.MAC":"metaObj['MAC']",
-			"vm.IP":"metaObj['IP']"
+			"vm.IP":"metaObj['IP']",
 			"organization":"credentials['organization']"}
 	
 	@staticMethod
@@ -35,7 +35,8 @@ class  MyPolicyEngine():
 		with self._mutex:
 			if self._instance = None
 				print "Loading ruletable from File..."
-				self._instance = RuleTable.load('Table1') #Loading from file backend
+				self._instance = RuleTable.loadOrGenerate('Table1',"RegexParser","RAWFile") #Loading from file backend
+
 		
 		return self._instance
 
