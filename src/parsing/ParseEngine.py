@@ -39,9 +39,7 @@ class ParseEngine():
 				
 	@staticmethod
 	def parseRule(string, driverName= _defaultDriver):
-		rule_uuid = uuid.uuid4().hex
-		
-		return ParseEngine._getDriver(driverName).parseRule(string,rule_uuid)
+		return ParseEngine._getDriver(driverName).parseRule(string)
 
 	@staticmethod
 	def craftRule(rule, driverName=None):
