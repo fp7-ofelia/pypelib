@@ -70,46 +70,6 @@ class RegexParser():
 		except Exception as e:
 			pass
 		return s 
-	
-		'''
-		print "Trying to strip: "+string
-		#Detect outter parenthesis and strip
-		try:
-			match = re.match(r'[\s]*\([\s]*(?P<inner>\(.+\))[\s]*\)[\s]*\Z', string,re.IGNORECASE)
-			#Quick and dirty way of detecting outter parenthesis in complex conditions
-			print "Checking stripping on complex..."
-			counter = 0
-			validStripping=False
-			print "Stripped text:"+match.group("inner")
-			for iterator in range(0,len(match.group("inner"))-1):
-				print "it:"+str(iterator)+" counter:"+str(counter)
-				if match.group("inner")[iterator] == '(':
-					counter+=1
-				elif match.group("inner")[iterator] == ')':
-					counter-=1
-				if counter==0 and  ( match.group("inner")[iterator] == '&' and match.group("inner")[iterator+1] == '&' ):
-					print "it: "+str(iterator)
-					validStripping = True
-					break	
-				elif counter==0 and (  match.group("inner")[iterator] == '|' and match.group("inner")[iterator+1] == '|' ):
-					print "it2: "+str(iterator)
-					validStripping = True
-					break
-			print "Value of validStripping: "+str(validStripping)	
-			if validStripping:	
-				return match.group("inner")
-		except Exception as e:
-			print e
-			pass
-		#in case of a simple condition also strip
-		try:
-			match = re.match(r'[\s]*\([\s]*(?P<inner>[^\(]+)[\s]*\)[\s]*\Z', string,re.IGNORECASE)
-			return match.group("inner")
-		except Exception as e:
-			pass
-		return string
-		'''	
-
 	@staticmethod
 	def _parseComplexCond(string):
 		#In case of complex condition it will always be, as it is stripped, (something) 
