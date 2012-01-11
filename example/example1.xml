@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rspec xmlns="http://www.example.com/rspec">
-<action type="create" id="id1">
+<action type="create" id="id1" credential="A">
 	<vm>
 		<name>myName</name>
 		<ram>256</ram>
