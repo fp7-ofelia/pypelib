@@ -15,11 +15,12 @@ from SimpleXmlParser import SimpleXmlParser
 '''
 
 def myInterface(credential,request):
-	
-	#"Parse" request	
-	dicReq = SimpleXmlParser.parse(request)
-	#Invoke policy
+	print request	
 	try:
+		#"Parse" request	
+		dicReq = SimpleXmlParser.parse(request)
+	
+		#Invoke policy enforcement
 		MyPolicyEngine.verify(dicReq)
 	except Exception,e:
 		print e

@@ -20,7 +20,7 @@ def addRuleAndDump(rule):
 	print "######################################################################\n"
 	time.sleep(1)
 
-def call(message,xml,cred):
+def call(message,cred,xml):
 	#Simulating throwing first query to the interface
 	print "%s"%message
 	print "Message: ope"
