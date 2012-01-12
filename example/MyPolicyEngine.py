@@ -9,6 +9,7 @@
 from threading import Thread, Lock
 from RuleTable import RuleTable 
 from Logger import Logger
+from interface.interface import MyInterface
 
 '''
 	Uses pyPElib to build ONE RuleTable instance to apply policies to a certain scope (in this example, the interface).
@@ -27,23 +28,22 @@ class  MyPolicyEngine():
 			"vm.RAM":"metaObj['actions'][0]['vm']['RAM']",
 			"vm.HDD":"metaObj['actions'][0]['vm']['HDD']",
 			"vm.OS":"metaObj['actions'][0]['vm']['OS']",
-			"CA":"credentials['CA']",
+			"user.id":MyInterface.getUserId,
 			"log":Logger.log}
 		
 	@staticmethod
-	def _getInstance():
+	def getInstance():
 		with MyPolicyEngine._mutex:
 			if not MyPolicyEngine._instance:
 				print "Loading ruletable from File..."
 				MyPolicyEngine._instance = RuleTable.loadOrGenerate('MyPolicyEngine', MyPolicyEngine._mappings, "RegexParser", "RAWFile", True, fileName="database/myPolicyEngine.db") #Loading from file backend
 
-		print "MyPolicyEngine instantiated"	
 		return MyPolicyEngine._instance
 
 	@staticmethod
 	def verify(obj):
-		return MyPolicyEngine._getInstance().evaluate(obj)		
+		return MyPolicyEngine.getInstance().evaluate(obj)		
 
 	@staticmethod
 	def dump():
-		return MyPolicyEngine._getInstance().dump()
+		return MyPolicyEngine.getInstance().dump()

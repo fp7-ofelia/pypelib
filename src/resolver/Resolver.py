@@ -61,20 +61,22 @@ class Resolver():
 	
 	#Resolve a key
 	def resolve(self, key, metaObj):
-		#print "[DEBUG] resolving:"+key
+		#print "[DEBUG] resolving:"+str(key)
+		#print "[DEBUG] mappings:"+str(self._mappings)
 		with self._mutex:
 			if not isinstance(key,str):
 				raise Exception("Only string keys are able to be resolved")
 
 			if key not in self._mappings:
+				#print "[DEBUG] "+str(self._getNumericValue(key))
 				return self._getNumericValue(key)
-				#raise Exception("Could not resolve key "+key)
 			
-			if type(self._mappings) == str:	
-				#print "[DEBUG] will eval"	
+			if isinstance(self._mappings[key],str):
+				#print "[DEBUG] resolved"+str(eval(self._mappings[key]))
 				return eval(self._mappings[key])
 			else:
-				return self._mappings(metaObj)
+				#print "[DEBUG] Action" 
+				return self._mappings[key](metaObj)
 				
 
 #resolver = Resolver.getOrGenerateResolver("hola",{"test":"metaObj","test2":2})

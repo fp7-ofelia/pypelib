@@ -4,6 +4,6 @@
 class Logger:
 	@staticmethod
 	def log(obj):
-		print "[Log]: "+str(obj)
+		print "[Log]: This is a logging action..."
 
 

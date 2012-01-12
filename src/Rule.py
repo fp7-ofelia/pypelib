@@ -99,7 +99,7 @@ class Rule():
 	def evaluate(self,metaObj,resolver):
 		try:
 			result = self._condition.evaluate(metaObj,resolver)
-			print "[DEBUG] Result was: "+str(result)
+			#print "[DEBUG] Result was: "+str(result)
 		except Exception as e:
 			print "[ERROR] Error on rule:"+self.dump()
 			print "[ERROR] Exception:"+str(e)
