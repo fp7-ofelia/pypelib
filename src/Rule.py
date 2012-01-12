@@ -97,16 +97,20 @@ class Rule():
 
 	#Resolver is passed at evaluation time to be able to dynamically redirect actions
 	def evaluate(self,metaObj,resolver):
-		result = self._condition.evaluate(metaObj,resolver)
+		try:
+			result = self._condition.evaluate(metaObj,resolver)
+			print "[DEBUG] Result was: "+str(result)
+		except Exception as e:
+			print "[ERROR] Error on rule:"+self.dump()
+			print "[ERROR] Exception:"+str(e)
+			print "[ERROR] Rule will be skipped!"
+			result = False
+		
 		#Testing:
 		#result = True		
 		if result: 
 			if self._matchAction != None:
-				print "LEODEBUG ANTES"
-				print self._matchAction
-				print metaObj
 				resolver.resolve(self._matchAction,metaObj)
-				print "LEODEBUG DESPUES"
 			#If is terminal raise TerminalMatch
 			if self._type['terminal']: 
 				raise TerminalMatch(self._type,self._errorMsg)

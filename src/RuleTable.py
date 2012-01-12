@@ -170,10 +170,8 @@ class RuleTable():
 						it.rule.evaluate(metaObj,self._resolver)	
 					except TerminalMatch as terminal:
 						if terminal.value:
-							print "LEODEBUG CON VALUE: "+terminal.value
 							return True
 						else:
-							print "LEODEBUG NO VALUE"
 							raise terminal
 			return self._policy	
 
@@ -184,7 +182,6 @@ class RuleTable():
 			kwargs2 = self._persistenceBackendParameters
 		else:
 			kwargs2 = kwargs
-		print "LEODEBUG: SAVE IS DONE"
 		PersistenceEngine.save(self,pBackend,**kwargs2)
 
 	#In general should not be called, use loadOrGenerate instead	

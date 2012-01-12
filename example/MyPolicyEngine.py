@@ -22,16 +22,17 @@ class  MyPolicyEngine():
 
 	#Mappings contains the basic association between keywords and objects, functions or static values
 	
-	_mappings = {"vm.Name":"metaObj['Name']",
-			"vm.RAM":"metaObj['RAM']",
-			"vm.HDD":"metaObj['HDD']",
-			"vm.OS":"metaObj['OS']",
-			"vm.Version":"metaObj['Version']",
-			"vm.MAC":"metaObj['MAC']",
-			"vm.IP":"metaObj['IP']",
+	_mappings = {"vm.Name":"['actions'][0]['vm']['Name']",
+			"vm.RAM":"metaObj['actions'][0]['vm']['RAM']",
+			"vm.HDD":"metaObj['actions'][0]['vm']['HDD']",
+			"vm.OS":"metaObj['actions'][0]['vm']['OS']",
 			"CA":"credentials['CA']",
-			"pass":"print \"HOLIS\""}
-	
+			"log":"MyPolicyEngine.log(metaObj)"}
+		
+	@staticmethod
+	def log(obj):
+		print "This is a logging example"	
+		
 	@staticmethod
 	def _getInstance():
 		with MyPolicyEngine._mutex:

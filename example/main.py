@@ -16,7 +16,7 @@ time.sleep(1)
 
 
 #Adding a Rule to out Policy Engine
-MyPolicyEngine._getInstance().addRule("if ( vm.RAM > 128 ) then deny do pass denyMessage Memory is more than 128 MB")
+MyPolicyEngine._getInstance().addRule("if ( vm.RAM > 128 ) && (vm.RAM <1024) then accept do pass denyMessage Memory is less than 128 MB or exceeds 1024MB")
 
 credential = {'CA':'i2CAT','user':'lbergesio'}
 ope = open('example1.xml','r').read()

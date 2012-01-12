@@ -41,7 +41,7 @@ class Range():
 	def isInRange(x,urange):
 		if not Range.isRange(urange):
 			raise Exception("Unknown data type; must be a Range instance")
-		print "DEBUG: "+str(urange.lowerLimit)+ " "+ str(x) +" "+str(urange.upperLimit)
+		#print "DEBUG: "+str(urange.lowerLimit)+ " "+ str(x) +" "+str(urange.upperLimit)
 		return urange.lowerLimit <= x <= urange.upperLimit
 	
 	@staticmethod
@@ -160,10 +160,22 @@ class Condition():
 				leftValue = resolver.resolve(self._leftOperand,metaObj)
 			except:
 				leftValue =  self._leftOperand
-	
-		#Adjusting types
+
+
+		#Adjusting types for numeric comparison
 		if (type(rightValue) != type(leftValue)) and (self._operator not in _rangeOperators ) and (self._operator not in _collectionOperators):
-			leftValue = type(rightValue)(leftValue)
+			if type(leftValue) in [int,float,complex,long] and type(rightValue)==str:
+				rightValue = type(leftValue)(rightValue)
+			elif type(rightValue) in [int,float,complex,long] and type(leftValue)==str: 
+				leftValue = type(rightValue)(leftValue)
+
+		#import pprint
+		#print str(type(leftValue))+": "+str(leftValue)		
+		#print str(type(rightValue))+": "+str(rightValue)		
+
+		#for simple conditions and str Values allow only == or !=
+		if (type(leftValue) == str and type(rightValue) == str) and (self._operator not in ["=","!="]):
+			raise Exception("Unknown operation over string or unresolvable keyword")
 		
 		#Perform comparison and return value
 		if self._operator == "=":

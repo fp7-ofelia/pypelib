@@ -18,11 +18,8 @@ def myInterface(credential,request):
 	
 	#"Parse" request	
 	dicReq = SimpleXmlParser.parse(request)
-	print "LEODEBUG: dictReq"
-
-	print dicReq	
 	#Invoke policy
-	try: 
+	try:
 		MyPolicyEngine.verify(dicReq)
 	except Exception,e:
 		print e
