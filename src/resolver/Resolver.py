@@ -7,8 +7,8 @@ from threading import Thread, Lock
 '''
         @author: msune
 
-	PolicyEngine Resolver class
-	Encapsulates logic of  
+	Resolver class
+	Attemps to resolve keywords agains values/actions through mappings	
 '''
 
 #Resolvers dictionary

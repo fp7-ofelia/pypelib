@@ -6,6 +6,14 @@ import time
 
 sys.path.append("../src/") 
 
+'''
+        @author: msune, lbergesio,cbermudo,omoya
+
+	Simple example to emulate Server/client side interaction
+ 
+'''
+
+
 from RuleTable import RuleTable
 from MyPolicyEngine import MyPolicyEngine
 from interface.interface import MyInterface
@@ -40,7 +48,7 @@ def call(message,cred,xml):
 print "Dumping inital table state...\n"
 addRuleAndDump(None)
 
-addRuleAndDump("if ( vm.RAM < 512 ) then accept do log denyMessage Memory is greater than 512 MB")
+addRuleAndDump("if ( vm.RAM < 512 ) then accept do log denyMessage Memory is greater than 512 MB #Preventing VMs with more than 512 MB")
 
 '''
 	Simulating client
@@ -55,7 +63,7 @@ ope2 = open('interface/example2.xml','r').read()
 call("First query",credential,ope)
 call("Second query",credential,ope2)
 
-addRuleAndDump("if ( vm.RAM > 128 ) && (user.id = lbergesio) then deny denyMessage User is not able to instantiate VMs with more than 128 MB of memory")
+addRuleAndDump("if ( vm.RAM > 128 ) && (user.id = lbergesio) then deny denyMessage User is not able to instantiate VMs with more than 128 MB of memory #lbergesio specific rule")
 print "Now moving rule on top (will forbbid user)"
 MyPolicyEngine.getInstance().moveRule(0,index=1)
 addRuleAndDump(None)

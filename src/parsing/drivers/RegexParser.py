@@ -7,7 +7,7 @@ import re
 from pyparsing import nestedExpr
 
 '''
-        @author: msune
+        @author: msune,cbermudo,omoya
 
 	RegexParser class
 '''

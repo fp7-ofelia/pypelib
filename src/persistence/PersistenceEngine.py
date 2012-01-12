@@ -5,8 +5,8 @@ import time
 '''
         @author: msune
 
-	ParseEngine	
-	Implementes driver-based parsing mechanism for rules
+	Persistence engine	
+	Implementes driver-based persistence backend selection 
 '''
 
 

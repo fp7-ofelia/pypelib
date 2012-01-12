@@ -10,7 +10,7 @@ from threading import Thread, Lock
 from resolver.Resolver import Resolver
 
 '''
-        @author: lbergesio
+        @author: lbergesio,omoya,cbermudo
 
         RAWFile     
         Implementes persistence engine to a raw file for RuleTables

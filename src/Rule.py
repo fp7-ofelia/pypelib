@@ -5,7 +5,7 @@ import exceptions
 import uuid
 
 '''
-        @author: msune
+        @author: msune,lbergesio
 
 	PolicyEngine Rule class
 	Encapsulates logic of a simple Rule	 

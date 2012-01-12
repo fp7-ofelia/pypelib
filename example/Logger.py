@@ -1,5 +1,5 @@
 ''' 
-	Some simple functions
+	Simple logger	
 '''
 class Logger:
 	@staticmethod

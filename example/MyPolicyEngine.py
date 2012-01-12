@@ -1,6 +1,6 @@
 
 '''
-        @author: msune
+        @author: msune,lbergesio
 
 	Simple example Policy Engine simualting a Server interface (e.g. rpc)
  

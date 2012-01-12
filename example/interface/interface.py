@@ -4,7 +4,7 @@
 '''
         @author: msune
 
-	Simple example simulating a Server interface (e.g. rpc)
+	Simple example simulating a Server remote method (e.g. rpc)
 '''
 import time
 

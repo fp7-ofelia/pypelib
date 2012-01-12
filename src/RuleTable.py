@@ -10,7 +10,7 @@ except:
    import pickle
 
 '''
-        @author: msune
+        @author: msune,lbergesio,omoya,cbermudo
 
 	PolicyEngine RuleTable class
 	Encapsulates logic of a simple Rule Table 
