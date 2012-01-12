@@ -36,7 +36,7 @@ class  MyPolicyEngine():
 		with MyPolicyEngine._mutex:
 			if not MyPolicyEngine._instance:
 				print "Loading ruletable from File..."
-				MyPolicyEngine._instance = RuleTable.loadOrGenerate('Table1', MyPolicyEngine._mappings, "RegexParser", "RAWFile", True, fileName="database/myPolicyEngine.db") #Loading from file backend
+				MyPolicyEngine._instance = RuleTable.loadOrGenerate('MyPolicyEngine', MyPolicyEngine._mappings, "RegexParser", "RAWFile", True, fileName="database/myPolicyEngine.db") #Loading from file backend
 
 		
 		return MyPolicyEngine._instance
