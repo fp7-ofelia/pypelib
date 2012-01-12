@@ -10,63 +10,53 @@ from RuleTable import RuleTable
 from MyPolicyEngine import MyPolicyEngine
 from interface import myInterface
 
-print "######################################################################\n"
-print "Dumping inital table state...\n"
-MyPolicyEngine.dump()
-time.sleep(1)
+def addRuleAndDump(rule):
+	print "\nAdding a Rule to Policy Engine"
+	if rule:
+		MyPolicyEngine._getInstance().addRule(rule)
+	print "\nDumping table state..."
+	print "######################################################################"
+	MyPolicyEngine.dump()
+	print "######################################################################\n"
+	time.sleep(1)
 
+def call(message,xml,cred):
+	#Simulating throwing first query to the interface
+	print "%s"%message
+	print "Message: ope"
+	try:
+		print "\Simulating query..."
+		print "->>>>>>>"
+		myInterface(cred,xml)
+	except Exception,e:
+		print "Query failed"
+		print str(e)
+
+	print "<<<<<<<--"
+	time.sleep(1)
+
+'''
+	Simulating instantiation of main engine, to call interface afterwards
+'''
+print "Dumping inital table state...\n"
+addRuleAndDump(None)
+
+addRuleAndDump("if ( vm.RAM < 512 ) then deny do log denyMessage Memory is more than 512 MB")
+
+'''
+	Simulating client
+'''
 #Generating requests
 credential = {'CA':'i2CAT','user':'lbergesio'}
 ope = open('example1.xml','r').read()
 ope2 = open('example2.xml','r').read()
 
 
-print "######################################################################\n"
-#Adding a Rule to out Policy Engine
-print "\nAdding a Rule to Policy Engine"
-MyPolicyEngine._getInstance().addRule("if ( vm.RAM > 512 ) then deny do pass denyMessage Memory is more than 512 MB")
-print "\nDumping table state..."
-MyPolicyEngine.dump()
 
- 
-print "######################################################################\n"
-#Simulating throwing first query to the interface
-print "\nFirst query is:\n"
-print ope
-try:
-	print "\nSimulating first query..."
-	myInterface(credential,ope)
-except Exception,e:
-	print "\nFirst query failed"
-	print str(e)
+call("First query",credential,ope2)
+call("Second query",credential,ope2)
 
-time.sleep(1)
+addRuleAndDump("if ( vm.RAM > 128 ) then deny do pass denyMessage Memory is more than 128 MB")
 
-print "######################################################################\n"
-print "\nSecond query is:\n"
-print ope2
-#Throwing second query
-try:
-	print "\nSimulating second query..."
-        myInterface(credential,ope2)
-except Exception,e:
-        print "\nSecond query failed"
-        print str(e)
-
-time.sleep(1)
-
-print "######################################################################\n"
-#Adding a rule & throwing first query again
-print "\nAdding a Rule to Policy Engine"
-MyPolicyEngine._getInstance().addRule("if ( vm.RAM > 128 ) then deny do pass denyMessage Memory is more than 128 MB")
-print "\nDumping table state..."
-MyPolicyEngine.dump()
-time.sleep(1)
-
-try:
-	print "\nSimulating third query..."
-	myInterface(credential,ope)
-except Exception,e:
-	print "\nFirst query failed the second time"
-	print str(e)
+call("Third query",credential,ope)
 

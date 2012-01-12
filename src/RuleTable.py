@@ -47,7 +47,7 @@ class RuleTable():
         def clone(self):
 		#XXX: in principle mutex is not needed since methods calling clone() are already protected
 		#with self._mutex:
-                cpTable = RuleTable(self.name,self._mappings,self._parser,self._persistenceBackend, False,self._policy,self.uuid, **self._persistenceBackendParameters)
+                cpTable = RuleTable(self.name,None,self._parser,self._persistenceBackend, False,self._policy,self.uuid, **self._persistenceBackendParameters)
                 cpTable._mutex = None
 		cpTable._persist = copy.deepcopy(self._persist)
 		cpTable._ruleSet = copy.deepcopy(self._ruleSet)

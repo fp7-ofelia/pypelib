@@ -70,8 +70,11 @@ class Resolver():
 				return self._getNumericValue(key)
 				#raise Exception("Could not resolve key "+key)
 			
-			#print "[DEBUG] will eval"	
-			return eval(self._mappings[key]) 
+			if type(self._mappings) == str:	
+				#print "[DEBUG] will eval"	
+				return eval(self._mappings[key])
+			else:
+				return self._mappings(metaObj)
 				
 
 #resolver = Resolver.getOrGenerateResolver("hola",{"test":"metaObj","test2":2})
