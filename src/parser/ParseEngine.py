@@ -1,0 +1,59 @@
+import os
+import sys
+import time
+import uuid
+
+'''
+        @author: msune
+
+	ParseEngine	
+	Implementes driver-based parsing mechanism for rules
+'''
+
+
+class ParseEngine():
+
+	#Drivers
+	_drivers = ["RegexParser"]
+	_defaultDriver = 'RegexParser'
+
+
+	#Fill with appropiate path
+	PATH_TO_DRIVERS="drivers"
+	
+	def __init__(self):
+		raise Exception("Static class cannot be instanciated")	
+
+	@staticmethod
+	def _getDriver(driverName=None):
+		print driverName
+		if driverName == None or driverName not in ParseEngine._drivers:
+			#TODO: Try all drivers?
+			raise Exception("Cannot find parser")
+	
+		elif driverName == "RegexParser":
+
+			path = '.' + ParseEngine.PATH_TO_DRIVERS + '.RegexParser'
+			exec('from ' + path + ' import RegexParser') 
+			#from ParseEngine.PATH_TO_DRIVERS.RegexParser import RegexParser
+			return RegexParser
+				
+	@staticmethod
+	def parseRule(string, driverName= _defaultDriver):
+		rule_uuid = uuid.uuid4().hex
+		
+		return ParseEngine._getDriver(driverName).parseRule(string,rule_uuid)
+
+	@staticmethod
+	def craftRule(rule, driverName=None):
+		return ParseEngine._getDriver(driverName).craftRule(rule)
+	
+	@staticmethod
+	def parseCondition(stringCond, driverName=None):
+		return ParseEngine._getDriver(driverName)._parseCondition(stringCond)
+	
+	@staticmethod
+	def craftCondition(condition, driverName=None):
+		return ParseEngine._getDriver(driverName).craftCondition(condition)
+
+

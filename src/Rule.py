@@ -1,0 +1,175 @@
+import os
+import sys
+import time
+import exceptions
+import uuid
+
+'''
+        @author: msune
+
+	PolicyEngine Rule class
+	Encapsulates logic of a simple Rule	 
+'''
+
+from Condition import Condition
+from persistence.PersistenceEngine import PersistenceEngine
+
+def setType(terminal, value):
+	
+	if terminal == 'terminal':
+		boolTerminal = True
+	else: 
+		boolTerminal = False
+	if value == 'accept':
+                boolValue = True
+        else:
+                boolValue = False
+
+
+        ruletype = {'value':boolValue ,'terminal':boolTerminal}
+
+        if ruletype == Rule.POSITIVE_TERMINAL:
+                return Rule.POSITIVE_TERMINAL
+
+        elif ruletype == Rule.NEGATIVE_TERMINAL:
+                return Rule.NEGATIVE_TERMINAL
+
+        elif ruletype == Rule.POSITIVE_NONTERMINAL:
+               return Rule.POSITIVE_NONTERMINAL
+
+        elif ruletype == Rule.NEGATIVE_NONTERMINAL:
+               return Rule.NEGATIVE_NONTERMINAL
+
+
+
+class TerminalMatch(exceptions.Exception):
+	value = None
+	desc = None
+	def __init__(self,rType,desc):
+		if isinstance(rType['value'],bool):
+			self.value = rType['value']
+		else:
+			raise Exception("Unknown rule type")
+		self.desc = desc	
+	def __str__(self):
+		return "%s "%self.desc
+
+class Rule():
+
+	#Class Attributes
+	_condition = None 
+	_description = None 
+	_errorMsg = None
+	_uuid = None #uuid.uuid4().hex
+	_tableName = None
+	_enabled = False 
+        _defaultParser = "RegexParser"
+        _defaultPersistence = "Django"
+
+	#Types of rule
+	POSITIVE_TERMINAL={'value':True,'terminal':True}
+	POSITIVE_NONTERMINAL={'value':True,'terminal':False}
+	NEGATIVE_TERMINAL={'value':False,'terminal':True}
+	NEGATIVE_NONTERMINAL={'value':False,'terminal':False}
+	
+	_types = [POSITIVE_TERMINAL,POSITIVE_NONTERMINAL,NEGATIVE_TERMINAL, NEGATIVE_NONTERMINAL]
+
+	#Rule type 
+	_type = None 
+
+	#Rule match Action
+	_matchAction=None
+
+
+	#Getters
+	def getCondition(self):
+		return self._condition
+	def getDescription(self):
+		return self._description
+	def getType(self):
+		return self._type
+	def getErrorMsg(self):
+		return self._errorMsg
+	def getMatchAction(self):
+		return self._matchAction
+	def getUUID(self):
+		return self._uuid
+	def getTableName(self):
+		return self._tableName
+	def getEnableState(self):
+		return self._enabled
+	
+	#Constructor
+	def __init__(self,condition,description,errorMsg,ruleType=POSITIVE_TERMINAL,action=None,enabled=False,uuid=None, tableName = None ):
+		if not isinstance(condition,Condition):
+			raise Exception("condition object must be an instance of Condition")
+		if ruleType not in self._types:
+			raise Exception("Unknown rule type" )
+		
+		if action == None and (ruleType == self.NEGATIVE_NONTERMINAL or ruleType == self.POSITIVE_NONTERMINAL):
+			raise Exception("You cannot create non-terminal actionless rules")	
+
+		self._condition = condition
+		self._matchAction = action
+		self._type = ruleType
+		self._description = description
+		self._errorMsg = errorMsg
+		self._uuid = uuid #Generate automatic Rule_uuid
+		self._tableName = tableName
+		self._enabled = enabled
+
+	def dump(self):
+		#Debug dump
+		toReturn = self._condition.dump()
+		
+		toReturn+="=> %s "%str(self._type['value'])
+		if self._matchAction != None:
+			toReturn += "(%s) "%str(self._matchAction)
+		if self._type['terminal']:
+			toReturn += "[TERM] "
+		if self._description:
+			toReturn+=" #"+self._description
+		return toReturn
+	#Resolver is passed at evaluation time to be able to dynamically redirect actions
+	def evaluate(self,metaObj,resolver):
+		result = self._condition.evaluate(metaObj,resolver)
+		#Testing:
+		#result = True		
+		if result: 
+			if self._matchAction != None:
+				resolver.resolve(self._matchAction,metaObj)
+			#If is terminal raise TerminalMatch
+			if self._type['terminal']: 
+				raise TerminalMatch(self._type,self._errorMsg)
+		#return whatever	
+		return
+	def splitType(self):
+
+		dic = self.getType()
+                if dic['value']:
+                        toReturnValue = 'accept'
+                else:
+                        toReturnValue = 'deny'
+
+                if dic['terminal']:
+                        toReturnTerminal = 'terminal'
+                else:
+                        toReturnTerminal = 'non-terminal'
+
+                return toReturnValue, toReturnTerminal
+
+	def getConditionDump(self):
+		return self.getCondition().dump()
+
+		
+	def save(self, parser = _defaultParser, persistence = _defaultPersistence):
+		
+		return PersistenceEngine.save(self, parser, persistence)
+		 
+
+#cond = Condition("5","6","<")
+#rule =Rule(cond,"Test",Rule.POSITIVE_TERMINAL)
+#try:
+#	rule.evaluate(None,None)
+#except Exception as e:
+#	print str(e)
