@@ -1,0 +1,20 @@
+pyPElib v0.1 README
+-------------------
+
+pyPElib library allows the programmer to use abstractions provided with the libary to build Policy Engines.
+
+CONTENTS
+--------
+There are two main folders, src/ containing raw pyPElib tool, and an example/ containing some demos examples.
+
+LICENSE
+-------
+Software is under L-GPL v3 license. Please check LICENSE file included.
+
+AUTHORSHIP
+----------
+pyPElib has been developed as part of the Ofelia Control Framework software developed within OFELIA FP7 project, and is being distributed as separate piece of software to be used in any software project.
+
+Contact { marc.sune | leonardo.bergesio | carlos.bermudo | oscar.moya } @ i2cat.net for further information. 
+
+

@@ -26,7 +26,6 @@ class ParseEngine():
 
 	@staticmethod
 	def _getDriver(driverName=None):
-		print driverName
 		if driverName == None or driverName not in ParseEngine._drivers:
 			#TODO: Try all drivers?
 			raise Exception("Cannot find parser")

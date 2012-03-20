@@ -53,7 +53,6 @@ class RuleTable():
 		
 		self._ruleSet = list()
 		if defaultPersistenceFlag and not FromLoad:
-			print 'SAVE'
 			self.save()
 
 		#Generate the resolver
@@ -147,7 +146,6 @@ class RuleTable():
 			return self._policy	
 
 	def save(self):
-		print self._defaultPersistence
 		PersistenceEngine._getDriver(self._defaultPersistence).saveRuleTable(self)
 	
 	@staticmethod

@@ -32,7 +32,6 @@ class PersistenceEngine():
 		#	try:
 		#		driverName = obj._defaultPersistenceDriver
 		#	except:
-		#		print " no hay driver "
 		#		#raise Exception (" Could not")
 		#if driverName == None or driverName not in PersistenceEngine._drivers:
 		#	#TODO: Try all drivers?
@@ -44,34 +43,23 @@ class PersistenceEngine():
 		#	#from drivers.django.Django import *
 		#	return Django
 		
-		print 'getDriver'
-
 		if driverName == "Django":
 			PATH = '.' + PersistenceEngine.PATH_TO_DRIVERS + '.django.Django'
 			try: 
 				exec('from ' + PATH + ' import Django')
-				print "Persistence OK"
 				return Django
 			except:
 				Exception(driverName + ' persistence driver not found in ' + PersistenceEngine.PATH_TO_DRIVERS)
 		elif driverName == "Write":
-			print 'Entra en Write'
 			PATH = '.' + PersistenceEngine.PATH_TO_DRIVERS + '.write.Write'
 			try:
-				print 'try en el exec'
-				print PATH
-				print 'from ' + PATH + ' import Write'
 				exec('from ' + PATH + ' import Write')
-				print 'supera el exec'
 				return Write
 			except:
 				Exception(driverName + ' persistence driver not found in ' + PersistenceEngine.PATH_TO_DRIVERS)
 		
 	@staticmethod
 	def save(obj, parser = _defaultParser, persistence = _defaultPersistence):
-		print 'obj ' + obj
-		print 'parser ' + parser
-		print 'persistence ' + persistence
 		return PersistenceEngine._getDriver(persistence).save(obj, parser)
 	
 	@staticmethod
@@ -80,7 +68,6 @@ class PersistenceEngine():
 
 	@staticmethod
         def saveRuleTable(obj, persistence = _defaultPersistence):
-		print persistence
                 return PersistenceEngine._getDriver(persistence).saveRuleTable(obj)
 	@staticmethod
 	def loadRuleTable(obj,auxuuid = None, persistence = _defaultPersistence):

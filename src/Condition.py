@@ -144,7 +144,6 @@ class Condition():
 
 	#Evaluate condition
 	def evaluate(self, metaObj,resolver):
-		#print "Evaluating: "+str(self._leftOperand)+" "+str(self._rightOperand)
 		#Retrieve operand value
 		rightValue=None
 		leftValue=None
@@ -170,14 +169,9 @@ class Condition():
 			except:
 				leftValue =  self._leftOperand
 	
-		#print "Values: "+str(leftValue)+"%s "%type(leftValue)+str(rightValue)+" %s"%type(rightValue)
-
 		#Adjusting types
 		if type(rightValue) != type(leftValue):
 			leftValue = type(rightValue)(leftValue)
-
-		#print str((str(leftValue) >= str(rightValue)))
-		#print str(self._negate ^ (str(leftValue) >= str(rightValue)))
 		
 		#Perform comparison and return value
 		if self._operator == "=":

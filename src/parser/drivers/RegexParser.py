@@ -54,7 +54,6 @@ class RegexParser():
 
 	@staticmethod
 	def _parseCondition(conditionString):
-		print  " condition string: " + conditionString
 		#Detect complex condition (Boolean) 
 	
 		#match = re.match(r'[\s]*(not)?[\s]*\((.+)\)[\s]*(&&|\|\|)[\s]*\((.+)\)[\s]*', conditionString,re.IGNORECASE)
@@ -65,11 +64,6 @@ class RegexParser():
 
 		if match:
 			Complex_Condition = Split_Complex_Condition(match.group())
-
-			print  "      Group 0 "       + match.group()
-			print "LO " + Complex_Condition[0] 
-			print "RO " + Complex_Condition[1]
-			print "OP " + Complex_Condition[2]
 
 			return Condition(RegexParser._parseCondition(Complex_Condition[0]),RegexParser._parseCondition(Complex_Condition[1]),Complex_Condition[2],match.group(1) != None)
 			#return Condition(RegexParser._parseCondition(match.group(2)),RegexParser._parseCondition(match.group(4)),match.group(3),match.group(1) != None)
@@ -102,7 +96,6 @@ class RegexParser():
 						
 						if not strings:
 							raise Exception("Error while parsing Rule in field Condition. Substrings")
-						print "Will generate Condition: %s %s %s (%s)" %(str(match.group(2)),"in",str(Collection(strings)), str(negate))
 						
 						return Condition(match.group(2),Collection(Get_Items(strings)),"in", negate )
 					else:
@@ -111,8 +104,6 @@ class RegexParser():
 						if not submatch:
 							raise Exception("Error while parsing Rule in field Condition.")
 						
-						print "Will generate Condition: %s %s %s (%s)"%(str(match.group(2)),str(operator),Range(submatch.group(2),submatch.group(3)), str(negate))
-					
 						return Condition(match.group(2),Range(submatch.group(2),submatch.group(3)),operator, negate)
 		raise Exception("Error while parsing Rule in field Condition. Unknown Operator.")
 			
@@ -123,11 +114,6 @@ class RegexParser():
 		#match = re.match(r'[\s]*if[\s]+(?P<condition>.+)[\s]+then[\s]+(?P<rValue>\w+)[\s]+(?P<term>nonterminal)?[\s]*(?P<do>do)?[\s]*(?P<action>[^#\s]+)[\s]([\s]*denyMessage([\s])*(?P<errorMsg>[^#]+))?([\s]*#([\s]*)(?P<comment>.+))?[\s]*', toParse,re.IGNORECASE)
 		match = re.match(r'[\s]*In[\s]+(?P<table>.+)[\s]+with[\s]+(?P<enabled>.+)[\s]+state[\s]+if[\s]+(?P<condition>.+)[\s]+then[\s]+(?P<rValue>\w+)[\s]+(?P<term>nonterminal)?[\s]*(?P<do>do)?[\s]*(?P<action>[^#\s]+)[\s]([\s]*denyMessage([\s])*(?P<errorMsg>[^#]+))?([\s]*#([\s]*)(?P<comment>.+))?[\s]*', toParse,re.IGNORECASE)
 		if not match:
-			print 'comment' + str(RegexParser._getGroupByName(match,"comment"))
-			print 'term ' + str(RegexParser._getGroupByName(match,"term"))
-			print 'error ' + str(RegexParser._getGroupByName(match,"errorMsg"))
-			print ' table ' + str(RegexParser._getGroupByName(match,"table"))
-			print ' enabled ' + str(RegexParser._getGroupByName(match,"enabled"))
 			raise Exception("Error while parsing Rule.") 
 	
 		#Generate Rule
@@ -213,10 +199,8 @@ class RegexParser():
 			string  += " with enabled state"
 		else:
 			string += " with disabled state"
-		print rule.getEnableState
 		  
 		string  += " if %s then " %(RegexParser.craftCondition(rule.getCondition()))
-		print string
 		#rValue
 		if rule.getType()["value"]:
 			string+="accept "
