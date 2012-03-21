@@ -6,6 +6,7 @@ import exceptions
 from src.RuleTable import RuleTable
 from VM import VM
 
+from xml.dom.minidom import parse
 
 #OLD
 #------------------------
