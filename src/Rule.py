@@ -61,8 +61,6 @@ class Rule():
 	_description = None 
 	_errorMsg = None
 	_uuid = None #uuid.uuid4().hex
-	_tableName = None
-	_enabled = False 
         _defaultParser = "RegexParser"
         _defaultPersistence = "Django"
 
@@ -94,13 +92,9 @@ class Rule():
 		return self._matchAction
 	def getUUID(self):
 		return self._uuid
-	def getTableName(self):
-		return self._tableName
-	def getEnableState(self):
-		return self._enabled
 	
 	#Constructor
-	def __init__(self,condition,description,errorMsg,ruleType=POSITIVE_TERMINAL,action=None,enabled=False,uuid=None, tableName = None ):
+	def __init__(self,condition,description,errorMsg,ruleType=POSITIVE_TERMINAL,action=None,uuid=None):
 		if not isinstance(condition,Condition):
 			raise Exception("condition object must be an instance of Condition")
 		if ruleType not in self._types:
@@ -115,8 +109,6 @@ class Rule():
 		self._description = description
 		self._errorMsg = errorMsg
 		self._uuid = uuid #Generate automatic Rule_uuid
-		self._tableName = tableName
-		self._enabled = enabled
 
 	def dump(self):
 		#Debug dump
@@ -130,6 +122,7 @@ class Rule():
 		if self._description:
 			toReturn+=" #"+self._description
 		return toReturn
+
 	#Resolver is passed at evaluation time to be able to dynamically redirect actions
 	def evaluate(self,metaObj,resolver):
 		result = self._condition.evaluate(metaObj,resolver)
@@ -143,6 +136,7 @@ class Rule():
 				raise TerminalMatch(self._type,self._errorMsg)
 		#return whatever	
 		return
+
 	def splitType(self):
 
 		dic = self.getType()
@@ -162,9 +156,9 @@ class Rule():
 		return self.getCondition().dump()
 
 		
-	def save(self, parser = _defaultParser, persistence = _defaultPersistence):
+	#def save(self, parser = _defaultParser, persistence = _defaultPersistence):
 		
-		return PersistenceEngine.save(self, parser, persistence)
+		#return PersistenceEngine.save(self, parser, persistence)
 		 
 
 #cond = Condition("5","6","<")

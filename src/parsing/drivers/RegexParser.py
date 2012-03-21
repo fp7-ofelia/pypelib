@@ -13,8 +13,8 @@ import re
 
 
 #from Rule import *
-from Rule import *
-from Condition import *
+from src.Rule import *
+from src.Condition import *
 from ConditionGetter import*
 #from Condition import *
 
@@ -111,8 +111,7 @@ class RegexParser():
 	def parseRule(toParse,rule_uuid):
 		
 		#Extracting basics of the rule	
-		#match = re.match(r'[\s]*if[\s]+(?P<condition>.+)[\s]+then[\s]+(?P<rValue>\w+)[\s]+(?P<term>nonterminal)?[\s]*(?P<do>do)?[\s]*(?P<action>[^#\s]+)[\s]([\s]*denyMessage([\s])*(?P<errorMsg>[^#]+))?([\s]*#([\s]*)(?P<comment>.+))?[\s]*', toParse,re.IGNORECASE)
-		match = re.match(r'[\s]*In[\s]+(?P<table>.+)[\s]+with[\s]+(?P<enabled>.+)[\s]+state[\s]+if[\s]+(?P<condition>.+)[\s]+then[\s]+(?P<rValue>\w+)[\s]+(?P<term>nonterminal)?[\s]*(?P<do>do)?[\s]*(?P<action>[^#\s]+)[\s]([\s]*denyMessage([\s])*(?P<errorMsg>[^#]+))?([\s]*#([\s]*)(?P<comment>.+))?[\s]*', toParse,re.IGNORECASE)
+		match = re.match(r'[\s]*if[\s]+(?P<condition>.+)[\s]+then[\s]+(?P<rValue>\w+)[\s]+(?P<term>nonterminal)?[\s]*(?P<do>do)?[\s]*(?P<action>[^#\s]+)[\s]([\s]*denyMessage([\s])*(?P<errorMsg>[^#]+))?([\s]*#([\s]*)(?P<comment>.+))?[\s]*', toParse,re.IGNORECASE)
 		if not match:
 			raise Exception("Error while parsing Rule.") 
 	
@@ -125,7 +124,6 @@ class RegexParser():
 		description=RegexParser._getGroupByName(match,"comment")
 		term=RegexParser._getGroupByName(match,"term")#.lower()
 		error=RegexParser._getGroupByName(match,"errorMsg")
-		Table = RegexParser._getGroupByName(match,"table")
 		UUID = uuid.uuid4()	
 	
 		if match.group("rValue").lower() == "accept":
@@ -139,10 +137,6 @@ class RegexParser():
 			else:
 				rType = Rule.NEGATIVE_TERMINAL
 
-		if match.group("enabled") == "disabled":
-			enabled = False
-		else:
-			enabled = True
 		
 		
 		return Rule(cond,
@@ -150,10 +144,7 @@ class RegexParser():
 			error,
 			rType,
 			RegexParser._getGroupByName(match,"action"),
-			enabled,
 			rule_uuid,
-			Table
-				
 			)	
 
 
@@ -194,13 +185,8 @@ class RegexParser():
 
 	@staticmethod
 	def craftRule(rule):
-		string  = "In " + rule.getTableName()
-		if rule.getEnableState() == True:		
-			string  += " with enabled state"
-		else:
-			string += " with disabled state"
 		  
-		string  += " if %s then " %(RegexParser.craftCondition(rule.getCondition()))
+		string  = " if %s then " %(RegexParser.craftCondition(rule.getCondition()))
 		#rValue
 		if rule.getType()["value"]:
 			string+="accept "

@@ -60,13 +60,14 @@ class RuleTable():
 
 	
 	#Add, move and remove rule
-	def addRule(self,string,pos=None,parser=None,persistence=None,doPersistence=None):
+	def addRule(self,string,enabled=True,pos=None,parser=None,persistence=None,doPersistence=None):
 		if parser == None:
 			usedParser = self._defaultParser
 		else:
 			usedParser = parser
 
 		rule = ParseEngine.parseRule(string, driverName = usedParser)
+		
 
 		if doPersistence or (doPersistence == None and self._defaultPersistenceFlag):
 			if persistence == None:
@@ -81,15 +82,15 @@ class RuleTable():
 		with self._mutex:	
 			if pos > len(self._ruleSet):
 				#raise Exception("Invalid position")
-				self._ruleSet.append(rule)				
+				self._ruleSet.append({rule:enabled})				
 			elif pos !=None:
-				self._ruleSet.insert(pos,rule)
+				self._ruleSet.insert(pos,{rule:enabled})
 			else:
-				self._ruleSet.append(rule)
+				self._ruleSet.append({rule:enabled})
 			if self._defaultPersistenceFlag:
 				self.save()	
 
-	def removeRule(self,rule, position = None):	
+	def removeRule(self,rule, position = None):
 		if position == 0:
 			aux = True
 		else:
@@ -97,7 +98,9 @@ class RuleTable():
 
 		if not position and not aux:
 			with self._mutex:
-				self._ruleSet.pop(self._ruleSet.index(rule))
+				for dic in self._ruleSet:
+					if ParseEngine.craftRule(dic.keys()[0],self._defaultParser).replace(" ","") == rule.replace(" ","") :
+						self._ruleSet.pop(self._ruleSet.index(dic))
 				if self._defaultPersistenceFlag:
 					self.save()
 		else:
@@ -110,21 +113,34 @@ class RuleTable():
 
 		self.loadRuleSet()
 		with self._mutex:	
-			oldIndex = self._ruleSet.index(rule)
-			l.insert(newindex, l.pop(oldIndex))
-			if self._defaultPersistenceFlag:		
-				self.save()
+			for dic in self._ruleSet:
+                        	if ParseEngine.craftRule(dic.keys()[0],self._defaultParser).replace(" ","") ==  rule.replace(" ","") :
+					oldIndex = self._ruleSet.index(dic)
+					self._ruleSet.insert(newIndex, self._ruleSet.pop(oldIndex))
+					if self._defaultPersistenceFlag:		
+						self.save()
+
+	def enableRule(self, rule):
+		for dic in self._ruleSet:
+                                if ParseEngine.craftRule(dic.keys()[0],self._defaultParser).replace(" ","") ==  rule.replace(" ","") :
+					dic[dic.keys()[0]]= True
+					if self._defaultPersistenceFlag:
+                                                self.save()
+	def disableRule(self, rule):
+                for dic in self._ruleSet:
+                                if ParseEngine.craftRule(dic.keys()[0],self._defaultParser).replace(" ","") ==  rule.replace(" ","") :
+                                        dic[dic.keys()[0]]= False
+					if self._defaultPersistenceFlag:
+                                                self.save()
 
 	def dump(self):
-		#Debug dump
-		#self.loadRuleSet(usedPersistence)
 		print "Table: "+self.name+" UUID: "+str(self.uuid)
 		print "NUmber of rules: "+str(len(self._ruleSet))
 		with self._mutex:
 			i=0
-			for rule in self._ruleSet:
+			for dic in self._ruleSet:
 				#print "[%s]:"%i +rule.dump()
-				print  "[%s]:"%i + ParseEngine.craftRule(rule,self._defaultParser)
+				print  "[%s]: "%i + ParseEngine.craftRule(dic.keys()[0],self._defaultParser) + " ENABLED: " + str(dic.values()[0])
 				i+=1
 		
 		print "Default policy: "+str(self._policy)
@@ -134,15 +150,16 @@ class RuleTable():
 		
 		#Iterate over ruleset
 		with self._mutex:
-			for rule in self._ruleSet:
-				try:
-					rule.evaluate(metaObj,self._resolver)	
+			for dic in self._ruleSet:
+				if dic.values()[0]:
+					try:
+						dic.keys()[0].evaluate(metaObj,self._resolver)	
 
-				except TerminalMatch as terminal:
-					if terminal.value:
-						return True
-					else:
-						raise terminal
+					except TerminalMatch as terminal:
+						if terminal.value:
+							return True
+						else:
+							raise terminal
 			return self._policy	
 
 	def save(self):

@@ -74,7 +74,7 @@ class Write():
 		lst = File.readlines()
 		File.seek(0)
 		while i < len(lst):
-			if lst[i] == obj.uuid + '\n':
+			if lst[i] == str(obj.uuid) + '\n':
 				lst[i+2] = str(obj.name) + '\n'
 				lst[i+4] = str(obj._mappings) + '\n'
 				lst[i+6] = str(obj._defaultParser) + '\n'
