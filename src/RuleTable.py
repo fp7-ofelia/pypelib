@@ -166,7 +166,7 @@ class RuleTable():
 		PersistenceEngine._getDriver(self._defaultPersistence).saveRuleTable(self)
 	
 	@staticmethod
-	def load(tableName, Persistence = 'Write'):
+	def load(tableName, Persistence = 'RAWFile'):
 		return PersistenceEngine._getDriver(Persistence).loadRuleTable(tableName)
 
 	def loadRuleSet(self):

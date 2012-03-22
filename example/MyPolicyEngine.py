@@ -2,14 +2,14 @@
 '''
         @author: msune
 
-	Simple example Policy Enginesimualting a Server interface (e.g. rpc)
+	Simple example Policy Engine simualting a Server interface (e.g. rpc)
  
 '''
 
 from src.RuleTable import RuleTable 
 
 '''
-	Uses libpype to build ONE RuleTable instance to apply policies to a certain scope (in this example, the interface).
+	Uses pyPElib to build ONE RuleTable instance to apply policies to a certain scope (in this example, the interface).
 	
 	
 '''
@@ -41,6 +41,7 @@ class  MyPolicyEngine():
 	@staticMethod
 	def verify(obj):
 		return self._getInstance().evaluate(obj)		
+
 	@staticMethod
 	def dump():
 		return self._getInstance().dump()
