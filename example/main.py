@@ -32,12 +32,26 @@ Table1.dump()
 #old..........
 
 #Simulating throwing first query to the interface
-
-interface(ope)
+try:
+	interface(credential,ope)
+except Exception,e:
+	print "First query failed"
+	print str(e)
 
 #Throwing second query
+try:
+        interface(credential,ope)
+except Exception,e:
+        print "Second query failed"
+        print str(e)
 
 #Adding a rule & throwing first query again
+Table1.addRule(rule22)
+try:
+        interface(credential,ope)
+except Exception,e:
+        print "First query failed the second time"
+        print str(e)
 
 #Dumping ruleTable
 MyPolicyEngine.dump()
