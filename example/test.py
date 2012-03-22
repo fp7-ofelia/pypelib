@@ -3,9 +3,9 @@ from src.persistence.PersistenceEngine import*
 from cPickle import loads, dumps
 
 
-#table = RuleTable("My table",{"vm.memory":"metaObj['memory']","project.vms":"metaObj['vms']","project.string":"metaObj['string']"},'RegexParser','Write',True,False,'333')
-t2 = RuleTable("My table2",{"project.vms":"metaObj['vms']","project.string":"metaObj['string']"},'RegexParser','Write',True,True,'111')
-s3 = RuleTable("My table3",{"project.string":"metaObj['string']"},'RegexParser','Write',False,True,'000')
+#table = RuleTable("My table",{"vm.memory":"metaObj['memory']","project.vms":"metaObj['vms']","project.string":"metaObj['string']"},'RegexParser','RAWFile',True,False,'333')
+t2 = RuleTable("My table2",{"project.vms":"metaObj['vms']","project.string":"metaObj['string']"},'RegexParser','RAWFile',True,True,'111')
+s3 = RuleTable("My table3",{"project.string":"metaObj['string']"},'RegexParser','RAWFile',False,True,'000')
 
 
 
@@ -40,5 +40,5 @@ table.moveRule('if project.vms > 2 then deny nonterminal do project.string denyM
 #except Exception as e:
 #       print e 
 
-#t2 = RuleTable("My table2",{"project.vms":"metaObj['vms']","project.string":"metaObj['string']"},'RegexParser','Write',False,True,'111')
+#t2 = RuleTable("My table2",{"project.vms":"metaObj['vms']","project.string":"metaObj['string']"},'RegexParser','RAWFile',False,True,'111')
 

@@ -6,7 +6,7 @@ from cPickle import loads, dumps
 from src.RuleTable import RuleTable
 
 
-class Write():
+class RAWFile():
 
 	def __intit__(self):
 		raise Exception("Static class cannot be instanciated")
@@ -14,13 +14,13 @@ class Write():
 	@staticmethod
 	def saveRuleTable(obj):
 
-		File = open('src/persistence/drivers/write/RuleTableFile.dat','a')
+		File = open('src/persistence/drivers/rawFile/RuleTableFile.dat','a')
 		File.close()
-		if Write.findRuleTable(obj):
+		if RAWFile.findRuleTable(obj):
 			File.close()
 			return	
 		else:
-			File = open('src/persistence/drivers/write/RuleTableFile.dat','a')
+			File = open('src/persistence/drivers/rawFile/RuleTableFile.dat','a')
 			File.write('#uuid:\n')
 	                File.write(obj.uuid)
 			File.write('\n#Name:\n')
@@ -37,38 +37,38 @@ class Write():
                		File.write(str(obj._policy))
           	        File.write('\n$$$$$')
 			File.write('\n#RuleSet:\n')
-			File.write(Write.setRuleSet(str(dumps(obj._ruleSet))))
+			File.write(RAWFile.setRuleSet(str(dumps(obj._ruleSet))))
                		#File.write(str(dumps(obj._ruleSet)))
                		File.write('\n#####\n')
 			File.close()
 
 	@staticmethod
 	def findRuleTable(obj):
-		File = open('src/persistence/drivers/write/RuleTableFile.dat','r+')
+		File = open('src/persistence/drivers/rawFile/RuleTableFile.dat','r+')
 #		while True:
 #			text = File.readline()
 #			if str(text) == str(obj.uuid)+'\n':
 #				text = File.readline()
 #                        	File.write(obj.name)
- #                       	File.write('\n#Mappings:\n')
-  #                      	File.write(str(obj._mappings))
-   #                     	File.write('\n#Parser:\n')
-    #                    	File.write(obj._defaultParser)
-     #                   	File.write('\n#Persistence:\n')
-      #                	 	File.write(obj._defaultPersistence)
-       #                 	File.write('\n#PersistenceFlag:\n')
-        #                	File.write(str(obj._defaultPersistenceFlag))
-         #               	File.write('\n#PolicyType:\n')
-          #              	File.write(str(obj._policy))
-           #             	File.write('\n$$$$$')
-            #            	File.write('\n#RuleSet:\n')
-	#			File.write(Write.setRuleSet(str(dumps(obj._ruleSet))))
-         #               	File.write('\n#####\n')
-          #              	File.close()
-	#			return True
-	#		elif text == "":
-	#			File.close()
-	#			return 	False
+#                        	File.write('\n#Mappings:\n')
+#                        	File.write(str(obj._mappings))
+#                        	File.write('\n#Parser:\n')
+#                        	File.write(obj._defaultParser)
+#                        	File.write('\n#Persistence:\n')
+#                      	 	File.write(obj._defaultPersistence)
+#                        	File.write('\n#PersistenceFlag:\n')
+#                        	File.write(str(obj._defaultPersistenceFlag))
+#                        	File.write('\n#PolicyType:\n')
+#                        	File.write(str(obj._policy))
+#                        	File.write('\n$$$$$')
+#                        	File.write('\n#RuleSet:\n')
+#				File.write(RAWFile.setRuleSet(str(dumps(obj._ruleSet))))
+#                        	File.write('\n#####\n')
+#                        	File.close()
+#				return True
+#			elif text == "":
+#				File.close()
+#				return 	False
 	
 		i = 0
 		lst = File.readlines()
@@ -81,7 +81,7 @@ class Write():
 				lst[i+8] = str(obj._defaultPersistence) + '\n'
 				lst[i+10] = str(obj._defaultPersistenceFlag) + '\n'
 				lst[i+12] = str(obj._policy) + '\n'
-				lst[i+15] = Write.setRuleSet(str(dumps(obj._ruleSet))) + '\n'
+				lst[i+15] = RAWFile.setRuleSet(str(dumps(obj._ruleSet))) + '\n'
 				File.writelines(lst)
 				File.truncate()
 				File.close()
@@ -91,8 +91,8 @@ class Write():
 		return False
 	@staticmethod
 	def loadRuleTable(tableName):
-		File = open('src/persistence/drivers/write/RuleTableFile.dat','r')
-		auxFile = open('src/persistence/drivers/write/RuleTableFile.dat','r')
+		File = open('src/persistence/drivers/rawFile/RuleTableFile.dat','r')
+		auxFile = open('src/persistence/drivers/rawFile/RuleTableFile.dat','r')
 		EntireFile = auxFile.readlines()
 		auxFile.close()
 		lst = []
@@ -111,7 +111,7 @@ class Write():
 						#text = File.readline()
 					elif text[0] == "$":
 						File.close()
-						lst = Write.cleanRuleTableParameters(lst)
+						lst = RAWFile.cleanRuleTableParameters(lst)
 						ruleTable = RuleTable(lst[0],eval(lst[1]),lst[2],lst[3],lst[4],lst[5],int(EntireFile[line-3]),True)
 						ruleTable.loadRuleSet()
 						ruleTable.dump()
@@ -125,7 +125,7 @@ class Write():
 
 	@staticmethod
 	def loadRuleSet(obj):
-		File = open('src/persistence/drivers/write/RuleTableFile.dat','r')
+		File = open('src/persistence/drivers/rawFile/RuleTableFile.dat','r')
 		
 		ruleSet = ""
 		text = ""
@@ -141,7 +141,7 @@ class Write():
 								pass
 							elif text == '#####\n':
 								File.close()
-								return loads(Write.reSetRuleSet(ruleSet))
+								return loads(RAWFile.reSetRuleSet(ruleSet))
 
 							else:
 								ruleSet += text
@@ -166,6 +166,4 @@ class Write():
 		lstout = list()
 		for param in lst:
 			lstout.append(param.replace('\n',''))
-		return lstout
-		
-		
+		return lstout		

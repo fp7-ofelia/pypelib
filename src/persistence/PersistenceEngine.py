@@ -17,7 +17,7 @@ class PersistenceEngine():
         _defaultPersistence = "Django"
 
 	#Drivers
-	_drivers = ["Django","Write"]
+	_drivers = ["Django","RAWFile"]
 
 	#Fill with appropiate path
 	PATH_TO_DRIVERS="drivers"
@@ -50,11 +50,11 @@ class PersistenceEngine():
 				return Django
 			except:
 				Exception(driverName + ' persistence driver not found in ' + PersistenceEngine.PATH_TO_DRIVERS)
-		elif driverName == "Write":
-			PATH = '.' + PersistenceEngine.PATH_TO_DRIVERS + '.write.Write'
+		elif driverName == "RAWFile":
+			PATH = '.' + PersistenceEngine.PATH_TO_DRIVERS + '.rawFile.RAWFile'
 			try:
-				exec('from ' + PATH + ' import Write')
-				return Write
+				exec('from ' + PATH + ' import RAWFile')
+				return RAWFile
 			except:
 				Exception(driverName + ' persistence driver not found in ' + PersistenceEngine.PATH_TO_DRIVERS)
 		

@@ -4,7 +4,7 @@ import time
 import exceptions
 
 from src.RuleTable import RuleTable
-from VM import VM
+from example.VM import VM
 
 from xml.dom.minidom import parse
 
@@ -17,7 +17,7 @@ metaObj = vm1.dump()
 metaObj2 = vm2.dump()
 
 Parser = 'RegexParser'
-Persistence = 'Write'
+Persistence = 'RAWFile'
 doPersistence = True
 Mappings = {"vm.Name":"metaObj['Name']","vm.RAM":"metaObj['RAM']","vm.HDD":"metaObj['HDD']","vm.OS":"metaObj['OS']","vm.Version":"metaObj['Version']","vm.MAC":"metaObj['MAC']","vm.IP":"metaObj['IP']"}
 

@@ -4,13 +4,13 @@
 '''
         @author: msune
 
-	Simple example simualting a Server interface (e.g. rpc)
+	Simple example simulating a Server interface (e.g. rpc)
 '''
 
 from MyPolicyEngine import MyPolicyEngine
 from SimpleXmlParser import SimpleXmlParser
 '''
-	RPC server interface, receives incomming request (in this example an XML request)	
+	RPC server interface, receives incomming request (in this example an XML request)
 	Throws exception containing the messages
 '''
 
