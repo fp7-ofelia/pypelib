@@ -3,7 +3,7 @@ import time
 from random import * 
 sys.path.append("../../../src/") 
 
-from persistence.drivers.rawfile.RAWFile import RAWFile
+from persistence.drivers.rawfile.RAWFile_old import RAWFile
 from RuleTable import RuleTable
 
 
