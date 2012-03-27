@@ -2,7 +2,12 @@ import os
 import sys
 import time
 import exceptions
+import copy 
 from threading import Thread, Lock
+try:
+   import cPickle as pickle
+except:
+   import pickle
 
 '''
         @author: msune
@@ -37,6 +42,17 @@ class RuleTable():
 	_mappings = None 
 	_mutex = None
 	_resolver = None
+
+        #Deep copy
+        def clone(self):
+		with self._mutex:
+	                cpTable = RuleTable(self.name,self._mappings,self._parser,self._persistenceBackend,self._persist,self._policy,self.uuid,self._persistenceBackendParameters)
+	                cpTable._mutex = None
+			cpTable._ruleSet = self._ruleSet 
+		        cpTable._resolver = None
+	                return cpTable
+
+
 	
 	#Constructor
 	def __init__(self,name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType = False, uuid = None,**kwargs):
@@ -44,7 +60,7 @@ class RuleTable():
 			raise Exception("Unknown default table policy")
 		self.uuid = uuid
 		self.name = name
-		self._mutex=Lock()
+		self._mutex = Lock()
 		self._policy = pType
 		self._parser = defaultParser
 		self._persistenceBackend = defaultPersistence
@@ -182,4 +198,5 @@ class RuleTable():
 	
 	def getRuleSet(self):
 		return self._ruleSet
-					
+
+

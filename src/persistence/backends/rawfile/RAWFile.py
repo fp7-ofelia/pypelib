@@ -7,7 +7,7 @@ try:
 except:
    import pickle
 from threading import Thread, Lock
-
+from resolver.Resolver import Resolver
 
 class RAWFile():
 	_mutex = Lock()
@@ -20,37 +20,14 @@ class RAWFile():
 		with RAWFile._mutex:
 			fileObj = open(kwargs["fileName"], "wb" )
 
-			#copy original object and unmute if it is the case
-
-			# PROBAR LO DEL __copy__ en la clase RuleTable A VER SI FUNCIONA
-                        cObj = copy.deepcopy(obj)
-			#if obj is a Rule it has no _mutex
 			try:
-				cObj._mutex = None
+                        	cObj = obj.clone()
 			except Exception,e:
-				print e
-				pass
-
+				print "Could not clone original obj %s\n%s" %(str(obj),str(e))
+			
 			pickle.dump(cObj,fileObj)
 			fileObj.close()
 			
-#                with RAWFile._mutex:
-#                        fileObj = open(kwargs["fileName"], "wb" )
-#
-#                        #copy original object and unmute if it is the case
-#                        cObj = RuleTable(obj.name,obj._mappings, obj._parser, obj._persistenceBackend, obj._persist, obj._policy, obj.uuid)
-#                        print obj.name
-#                        print cObj.name
-#                        cObj.name="ELIMINADO"
-#                        print obj.name
-#                        for rule in obj.getRuleSet():
-#                                cObj.getRuleSet().append(rule._uuid)
-#                        cObj._mutex = None
-#
-#                        pickle.dump(cObj,fileObj)
-#                        fileObj.close()
-#
-#	
 	@staticmethod
 	def load(tableName, parser, **kwargs):
 		if not kwargs["fileName"]:
@@ -59,6 +36,7 @@ class RAWFile():
 		fileObj = open(kwargs["fileName"], "r" )
 		table = pickle.load(fileObj)
 		table._mutex = Lock()
+		table._resolver = Resolver(table._mappings)
 		fileObj.close()
 			
 		if table.name != tableName:
@@ -66,5 +44,3 @@ class RAWFile():
 		return table
 
 
-
-			
