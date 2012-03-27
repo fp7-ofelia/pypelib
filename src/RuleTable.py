@@ -46,9 +46,9 @@ class RuleTable():
         #Deep copy
         def clone(self):
 		with self._mutex:
-	                cpTable = RuleTable(self.name,self._mappings,self._parser,self._persistenceBackend,self._persist,self._policy,self.uuid,self._persistenceBackendParameters)
+	                cpTable = RuleTable(self.name,self._mappings,self._parser,self._persistenceBackend,self._persist,self._policy,self.uuid, **self._persistenceBackendParameters)
 	                cpTable._mutex = None
-			cpTable._ruleSet = self._ruleSet 
+			cpTable._ruleSet = copy.copy(self._ruleSet)
 		        cpTable._resolver = None
 	                return cpTable
 
