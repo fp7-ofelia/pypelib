@@ -45,12 +45,14 @@ class RuleTable():
 
         #Deep copy
         def clone(self):
-		with self._mutex:
-	                cpTable = RuleTable(self.name,self._mappings,self._parser,self._persistenceBackend,self._persist,self._policy,self.uuid, **self._persistenceBackendParameters)
-	                cpTable._mutex = None
-			cpTable._ruleSet = copy.copy(self._ruleSet)
-		        cpTable._resolver = None
-	                return cpTable
+		#XXX: in principle mutex is not needed since methods calling clone() are already protected
+		#with self._mutex:
+                cpTable = RuleTable(self.name,self._mappings,self._parser,self._persistenceBackend, False,self._policy,self.uuid, **self._persistenceBackendParameters)
+                cpTable._mutex = None
+		cpTable._persist = copy.deepcopy(self._persist)
+		cpTable._ruleSet = copy.deepcopy(self._ruleSet)
+	        cpTable._resolver = None
+                return cpTable
 
 
 	
@@ -168,8 +170,10 @@ class RuleTable():
 						it.rule.evaluate(metaObj,self._resolver)	
 					except TerminalMatch as terminal:
 						if terminal.value:
+							print "LEODEBUG CON VALUE: "+terminal.value
 							return True
 						else:
+							print "LEODEBUG NO VALUE"
 							raise terminal
 			return self._policy	
 
@@ -180,6 +184,7 @@ class RuleTable():
 			kwargs2 = self._persistenceBackendParameters
 		else:
 			kwargs2 = kwargs
+		print "LEODEBUG: SAVE IS DONE"
 		PersistenceEngine.save(self,pBackend,**kwargs2)
 
 	#In general should not be called, use loadOrGenerate instead	
@@ -193,12 +198,9 @@ class RuleTable():
 			return PersistenceEngine.load(tableName,pBackend,defaultParser,**kwargs)
 		except Exception as e:
 			print "Unable to load RuleTable, generating a new one"
-		try:
-			print "Calling RuleTable constructor..."
-			r = RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,**kwargs)
-		except Exception as e:
-			print e
-		return r
+		print "Calling RuleTable constructor..."
+		return RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,**kwargs)
+
 	def getRuleSet(self):
 		return self._ruleSet
 

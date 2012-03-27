@@ -102,7 +102,11 @@ class Rule():
 		#result = True		
 		if result: 
 			if self._matchAction != None:
+				print "LEODEBUG ANTES"
+				print self._matchAction
+				print metaObj
 				resolver.resolve(self._matchAction,metaObj)
+				print "LEODEBUG DESPUES"
 			#If is terminal raise TerminalMatch
 			if self._type['terminal']: 
 				raise TerminalMatch(self._type,self._errorMsg)

@@ -29,7 +29,8 @@ class  MyPolicyEngine():
 			"vm.Version":"metaObj['Version']",
 			"vm.MAC":"metaObj['MAC']",
 			"vm.IP":"metaObj['IP']",
-			"organization":"credentials['organization']"}
+			"CA":"credentials['CA']",
+			"pass":"print \"HOLIS\""}
 	
 	@staticmethod
 	def _getInstance():

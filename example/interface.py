@@ -6,7 +6,7 @@
 
 	Simple example simulating a Server interface (e.g. rpc)
 '''
-
+import time
 from MyPolicyEngine import MyPolicyEngine
 from SimpleXmlParser import SimpleXmlParser
 '''
@@ -14,13 +14,19 @@ from SimpleXmlParser import SimpleXmlParser
 	Throws exception containing the messages
 '''
 
-def myInterface(request):
+def myInterface(credential,request):
 	
 	#"Parse" request	
-	dicReq = SimpleXmlParser(request)
-	
-	#Invoke policy 
-	MyPolicyEngine.evaluate(dictReq)
+	dicReq = SimpleXmlParser.parse(request)
+	print "LEODEBUG: dictReq"
+
+	print dicReq	
+	#Invoke policy
+	try: 
+		MyPolicyEngine.verify(dicReq)
+	except Exception,e:
+		print e
+		raise e
 
 	print "Request was verified. Doing some fancy stuff..."
 	time.sleep(2)

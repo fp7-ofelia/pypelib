@@ -70,6 +70,8 @@ class Resolver():
 				raise Exception("Could not resolve key "+key)
 			
 			if isinstance(self._mappings[key],str):
+				print "LEODEBUG ENTRA EN EL EVAL"
+				print self._mappings[key]
 				return eval(self._mappings[key]) 
 			else:
 				return self._getNumericValue(self._mappings[key])

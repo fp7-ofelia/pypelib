@@ -9,7 +9,16 @@ except:
 from threading import Thread, Lock
 from resolver.Resolver import Resolver
 
+'''
+        @author: lbergesio
+
+        RAWFile     
+        Implementes persistence engine to a raw file for RuleTables
+'''
+
 class RAWFile():
+
+	#XXX: lbergesio: Is it necessary to use a mutex here?
 	_mutex = Lock()
 
 	@staticmethod
