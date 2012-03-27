@@ -185,17 +185,20 @@ class RuleTable():
 	#In general should not be called, use loadOrGenerate instead	
 	@staticmethod
 	def load(tableName, pBackend,**kwargs):
-		return PersistenceEngine.loadRuleTable(tableName,pBackend,kwargs)
+		return PersistenceEngine.load(tableName,pBackend,kwargs)
 	
 	@staticmethod
 	def loadOrGenerate(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType=False, uuid=None,**kwargs):
 		try:
-			return PersistenceEngine.loadRuleTable(tableName,pBackend,defaultParser,**kwargs)
+			return PersistenceEngine.load(tableName,pBackend,defaultParser,**kwargs)
 		except Exception as e:
 			print "Unable to load RuleTable, generating a new one"
-
-		return RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,**kwargs)
-	
+		try:
+			print "Calling RuleTable constructor..."
+			r = RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,**kwargs)
+		except Exception as e:
+			print e
+		return r
 	def getRuleSet(self):
 		return self._ruleSet
 

@@ -30,17 +30,20 @@ class RAWFile():
 			
 	@staticmethod
 	def load(tableName, parser, **kwargs):
-		if not kwargs["fileName"]:
-			raise Exception("FileName is required")
-	
-		fileObj = open(kwargs["fileName"], "r" )
-		table = pickle.load(fileObj)
-		table._mutex = Lock()
-		table._resolver = Resolver(table._mappings)
-		fileObj.close()
-			
-		if table.name != tableName:
-			raise Exception("Table name mismatch; did you specify the correct file?")
-		return table
+
+		with RAWFile._mutex:
+			if not kwargs["fileName"]:
+				raise Exception("FileName is required")
+		
+			fileObj = open(kwargs["fileName"], "r" )
+			table = pickle.load(fileObj)
+			table._mutex = Lock()
+			table._resolver = Resolver(table._mappings)
+			print table
+			fileObj.close()
+				
+			if table.name != tableName:
+				raise Exception("Table name mismatch; did you specify the correct file?")
+			return table
 
 

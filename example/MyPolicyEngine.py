@@ -38,7 +38,7 @@ class  MyPolicyEngine():
 				print "Loading ruletable from File..."
 				MyPolicyEngine._instance = RuleTable.loadOrGenerate('MyPolicyEngine', MyPolicyEngine._mappings, "RegexParser", "RAWFile", True, fileName="database/myPolicyEngine.db") #Loading from file backend
 
-		
+		print "MyPolocyEngine instantiated"	
 		return MyPolicyEngine._instance
 
 	@staticmethod
