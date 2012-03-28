@@ -3,7 +3,7 @@
 <action type="create" id="id2" credential="B">
 	<vm>
 		<name>myName</name>
-		<ram>512</ram>
+		<ram>1024</ram>
 		<hdd>hd.img</hdd>
 		
 	</vm>
