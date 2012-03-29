@@ -43,19 +43,6 @@ class RuleTable():
 	_mutex = None
 	_resolver = None
 
-        #Deep copy
-        def clone(self):
-		#XXX: in principle mutex is not needed since methods calling clone() are already protected
-		#with self._mutex:
-                cpTable = RuleTable(self.name,None,self._parser,self._persistenceBackend, False,self._policy,self.uuid, **self._persistenceBackendParameters)
-                cpTable._mutex = None
-		cpTable._persist = copy.deepcopy(self._persist)
-		cpTable._ruleSet = copy.deepcopy(self._ruleSet)
-	        cpTable._resolver = None
-                return cpTable
-
-
-	
 	#Constructor
 	def __init__(self,name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType = False, uuid = None,**kwargs):
 		if not isinstance(pType,bool):
@@ -76,6 +63,18 @@ class RuleTable():
 
 		#Generate the resolver
 		self._resolver = Resolver(resolverMappings)
+
+        #Deep copy
+        def clone(self):
+                #XXX: in principle mutex is not needed since methods calling clone() are already protected
+                #with self._mutex:
+                cpTable = RuleTable(self.name,None,self._parser,self._persistenceBackend, False,self._policy,self.uuid, **self._persistenceBackendParameters)
+                cpTable._mutex = None
+                cpTable._persist = copy.deepcopy(self._persist)
+                cpTable._ruleSet = copy.deepcopy(self._ruleSet)
+                cpTable._resolver = None
+                return cpTable
+
 	
 	#Determine rule position
 	def _getRuleIndex(self, rule):	
@@ -186,16 +185,15 @@ class RuleTable():
 
 	#In general should not be called, use loadOrGenerate instead	
 	@staticmethod
-	def load(tableName, pBackend,**kwargs):
-		return PersistenceEngine.load(tableName,pBackend,kwargs)
+	def load(name, resolverMappings, pBackend, **kwargs):
+		return PersistenceEngine.load(name,pBackend,resolverMappings,kwargs)
 	
 	@staticmethod
 	def loadOrGenerate(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType=False, uuid=None,**kwargs):
 		try:
-			return PersistenceEngine.load(tableName,pBackend,defaultParser,**kwargs)
+			return PersistenceEngine.load(name,defaultPersistence, resolverMappings, defaultParser,**kwargs)
 		except Exception as e:
 			print "Unable to load RuleTable, generating a new one"
-		print "Calling RuleTable constructor..."
 		return RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,**kwargs)
 
 	def getRuleSet(self):

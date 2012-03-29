@@ -38,8 +38,7 @@ class RAWFile():
 			fileObj.close()
 			
 	@staticmethod
-	def load(tableName, parser, **kwargs):
-
+	def load(tableName, resolverMappings, parser, **kwargs):
 		with RAWFile._mutex:
 			if not kwargs["fileName"]:
 				raise Exception("FileName is required")
@@ -47,8 +46,8 @@ class RAWFile():
 			fileObj = open(kwargs["fileName"], "r" )
 			table = pickle.load(fileObj)
 			table._mutex = Lock()
+			table._mappings = resolverMappings
 			table._resolver = Resolver(table._mappings)
-			print table
 			fileObj.close()
 				
 			if table.name != tableName:

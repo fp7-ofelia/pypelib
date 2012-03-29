@@ -49,5 +49,5 @@ class PersistenceEngine():
 		return PersistenceEngine._getDriver(pBackend).save(obj, parser, **kwargs)
 	
 	@staticmethod
-	def load(tableName, pBackend, parser=None, **kwargs):
-		return PersistenceEngine._getDriver(pBackend).load(tableName, parser, **kwargs)
+	def load(tableName, pBackend, resolverMappings, parser=None, **kwargs):
+		return PersistenceEngine._getDriver(pBackend).load(tableName, resolverMappings, parser, **kwargs)
