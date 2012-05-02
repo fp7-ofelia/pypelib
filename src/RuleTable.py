@@ -147,7 +147,39 @@ class RuleTable():
 		return self._modEnableRule(True,rule,index)
 	def disableRule(self, rule=None, index= None):
 		return self._modEnableRule(False,rule,index)
-	
+
+	def setPolicy(self, policy):
+		if not isinstance(policy,bool):
+			raise Exception("Unknown default table policy")
+		with self._mutex:
+			self._policy = policy
+			if self._persist:
+				self.save()
+
+	def setParser(self, parser):
+		with self._mutex:
+			self._parser = parser
+			if self._persist:
+				self.save()
+
+	def setPersistenceBackend(self, persistenceBackend):
+		with self._mutex:
+			self._persistenceBackend = persistenceBackend
+			if self._persist:
+				self.save()
+
+	def setPersistenceFlag(self, persistenceFlag):
+		with self._mutex:
+			self._persist = persistenceFlag
+			if self._persist:
+				self.save()
+
+	def setMappings(self, mappings):
+		with self._mutex:
+			self._mappings = mappings
+			if self._persist:
+				self.save()
+
 	def dump(self):
 		print "Table: "+self.name+" UUID: "+str(self.uuid)
 		print "NUmber of rules: "+str(len(self._ruleSet))
