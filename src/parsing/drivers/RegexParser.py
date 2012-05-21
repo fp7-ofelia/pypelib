@@ -15,6 +15,7 @@ from pyparsing import nestedExpr
 from Rule import *
 from Condition import *
 
+
 '''RegexParser class'''
 class RegexParser():
 
@@ -106,12 +107,15 @@ class RegexParser():
 			return Condition(RegexParser._parseCondition(leftOP),RegexParser._parseCondition(rightOP),op,neg)
 		else:
 			#Simple conditions
-			match = re.match(r'[\s]*(not)?[\s]*([^()\s]+)[\s]*(=|!=|>|<|>=|<=)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
+			match0 = re.match(r'[\s]*(not)?[\s]*([^()\s]+)[\s]*(>=|<=)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
+			if match0:
+                        	return Condition(RegexParser._getNumericValue(match0.group(2)),match0.group(4),RegexParser._getNumericValue(match0.group(3)),match0.group(1) != None)
+			match = re.match(r'[\s]*(not)?[\s]*([^()\s]+)[\s]*(=|!=|>|<)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
 			if match:
-				return Condition(RegexParser._getNumericValue(match.group(2)),match.group(4),RegexParser._getNumericValue(match.group(3)),match.group(1) != None)	
+				return Condition(RegexParser._getNumericValue(match.group(2)),match.group(4),RegexParser._getNumericValue(match.group(3)).replace(" ",""),match.group(1) != None)	
 			else:
 				#Ranges and collections
-				match = re.match(r'[\s]*(not)?[\s]*(\w+)[\s]+(in|not[\s]+in)[\s]+(collection|range)[\s]*(\{(.+)\}|\[(.+)\])[\s]*', conditionString,re.IGNORECASE)
+				match = re.match(r'[\s]*(not)?[\s]*(.+)[\s]+(in|not[\s]+in)[\s]+(collection|range)[\s]*(\{(.+)\}|\[(.+)\])[\s]*', conditionString,re.IGNORECASE)
 				if match:
 					negate = None
 					if re.match(r'[\s]*\[(.*)]',match.group(5)):
