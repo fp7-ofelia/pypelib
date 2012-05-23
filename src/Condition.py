@@ -27,7 +27,6 @@ class Collection(list):
 	def isCollection(x):
 		return isinstance(x,Collection) 
 	
-
 '''Range inner class'''
 class Range():
 	upperLimit=None
@@ -41,7 +40,6 @@ class Range():
 	def isInRange(x,urange):
 		if not Range.isRange(urange):
 			raise Exception("Unknown data type; must be a Range instance")
-		#print "DEBUG: "+str(urange.lowerLimit)+ " "+ str(x) +" "+str(urange.upperLimit)
 		return urange.lowerLimit <= x <= urange.upperLimit
 	
 	@staticmethod
@@ -61,6 +59,7 @@ class Range():
 	def __str__(self):
 	#	return "(%s,%s)"%(str(self.lowerLimit),str(self.upperLimit))
 		return "%s,%s"%(str(self.lowerLimit),str(self.upperLimit))
+
 '''Condition class'''
 class Condition():
 	
@@ -84,7 +83,7 @@ class Condition():
 
 	#Constructor
 	def __init__(self, left, right, operator,negate=False):
-	
+
 		self._leftOperand = left
 		self._rightOperand = right
 		self._operator = operator
@@ -122,8 +121,23 @@ class Condition():
 		return isinstance(x,Condition) 
 
 	def dump(self):
+                if ( Range.isRange(self._rightOperand) ):
+			negate=""
+			if self._negate:
+				negate="not "
+			if ( self._operator == '[]' ):
+				return " %s %s in range [%s] "%(negate,self._leftOperand,str(self._rightOperand))
+			else:
+				return " %s %s in range {%s} "%(negate,self._leftOperand,str(self._rightOperand))
+
+		if ( Collection.isCollection(self._rightOperand) ):
+			rightOp = "collection {" 
+			for item in self._rightOperand:
+				rightOp = rightOp + str(item) + ","
+			rightOp = rightOp[:-1] + "}"
+			self._rightOperand = rightOp
+
 		if Condition.isCondition(self._leftOperand):
-			#return " (%s) %s (%s)  "%(self._leftOperand.dump(),str(self._operator),self._rightOperand.dump())
 			negate = ""
 			if self._negate:
 				negate = "not "
@@ -133,6 +147,7 @@ class Condition():
 			if self._negate:
 				negate="not "
 			return " %s %s %s %s   "%(negate,self._leftOperand,str(self._operator),str(self._rightOperand))
+
 
 	#Evaluate condition
 	def evaluate(self, metaObj,resolver):
@@ -169,10 +184,6 @@ class Condition():
 			elif type(rightValue) in [int,float,complex,long] and type(leftValue)==str: 
 				leftValue = type(rightValue)(leftValue)
 
-		#import pprint
-		#print str(type(leftValue))+": "+str(leftValue)		
-		#print str(type(rightValue))+": "+str(rightValue)		
-
 		#for simple conditions and str Values allow only == or !=
 		if (type(leftValue) == str and type(rightValue) == str) and (self._operator not in ["=","!="]):
 			raise Exception("Unknown operation over string or unresolvable keyword")
@@ -202,7 +213,3 @@ class Condition():
 			return self._negate ^ (leftValue or rightValue)
 		else:
 			raise Exception("Unknown operator??")
-
-
-
-
