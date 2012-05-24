@@ -105,39 +105,39 @@ class RuleTable():
 				self.save()	
 
 	def removeRule(self,rule=None, index=None):
-		if (not rule) and (not index):
+		if (not rule) and (index == None):
 			raise Exception("Unable to determine which rule to remove; you must specify either the rule or the index")
 
 		with self._mutex:
-			if not ruleNumber:
+			if index == None:
 				index = self._getRuleIndex(rule)
-				if not index:
+				if index == None:
 					raise Exception("Unable to find rule in the ruleSet")
-			self._ruleSet.pop(position)
+			self._ruleSet.pop(index)
 			if self._persist:
 				self.save()
 
-	def moveRule(self, newIndex, rule=None, index=None,):
-		if (not rule) and (not index):
+	def moveRule(self, newIndex, rule=None, index=None):
+		if (not rule) and (index == None):
 			raise Exception("Unable to determine which rule to move; you must specify either the rule or the index")
 
 		with self._mutex:	
-			if not index:
+			if index == None:
 				index = self._getRuleIndex(rule)
-				if not index:
+				if index == None:
 					raise Exception("Unable to find rule in the ruleSet")
 			self._ruleSet.insert(newIndex, self._ruleSet.pop(index))
 			if self._persist:		
 				self.save()
 
 	def _modEnableRule(self, enable, rule=None,index=None):
-		if (not rule) and (not index):
+		if (not rule) and (index == None):
 			raise Exception("Unable to determine which rule to enable; you must specify either the rule or the index")
 
 		with self._mutex:	
-			if not index:
+			if index == None:
 				index = self._getRuleIndex(rule)
-				if not index:
+				if index == None:
 					raise Exception("Unable to find rule in the ruleSet")
 			self._ruleSet[index].enable = enable	
 			if self._persist:		
@@ -147,7 +147,39 @@ class RuleTable():
 		return self._modEnableRule(True,rule,index)
 	def disableRule(self, rule=None, index= None):
 		return self._modEnableRule(False,rule,index)
-	
+
+	def setPolicy(self, policy):
+		if not isinstance(policy,bool):
+			raise Exception("Unknown default table policy")
+		with self._mutex:
+			self._policy = policy
+			if self._persist:
+				self.save()
+
+	def setParser(self, parser):
+		with self._mutex:
+			self._parser = parser
+			if self._persist:
+				self.save()
+
+	def setPersistenceBackend(self, persistenceBackend):
+		with self._mutex:
+			self._persistenceBackend = persistenceBackend
+			if self._persist:
+				self.save()
+
+	def setPersistenceFlag(self, persistenceFlag):
+		with self._mutex:
+			self._persist = persistenceFlag
+			if self._persist:
+				self.save()
+
+	def setMappings(self, mappings):
+		with self._mutex:
+			self._mappings = mappings
+			if self._persist:
+				self.save()
+
 	def dump(self):
 		print "Table: "+self.name+" UUID: "+str(self.uuid)
 		print "NUmber of rules: "+str(len(self._ruleSet))
@@ -186,7 +218,7 @@ class RuleTable():
 	#In general should not be called, use loadOrGenerate instead	
 	@staticmethod
 	def load(name, resolverMappings, pBackend, **kwargs):
-		return PersistenceEngine.load(name,pBackend,resolverMappings,kwargs)
+		return PersistenceEngine.load(name,pBackend,resolverMappings,**kwargs)
 	
 	@staticmethod
 	def loadOrGenerate(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType=False, uuid=None,**kwargs):
@@ -196,7 +228,24 @@ class RuleTable():
 			print "Unable to load RuleTable, generating a new one"
 		return RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,**kwargs)
 
-	def getRuleSet(self):
-		return self._ruleSet
+	#Getters
+        def getRuleSet(self):
+                return self._ruleSet
 
+        def getName(self):
+                return self.name
 
+        def getPolicyType(self):
+                return self._policy
+
+        def getPersistence(self):
+                return self._persistenceBackend
+
+        def getParser(self):
+                return self._parser
+
+        def getResolverMappings(self):
+                return self._mappings
+
+        def getPersistenceFlag(self):
+                return self._persist

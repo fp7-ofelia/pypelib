@@ -44,13 +44,14 @@ class ParseEngine():
 	@staticmethod
 	def craftRule(rule, driverName=None):
 		return ParseEngine._getDriver(driverName).craftRule(rule)
-	
-	@staticmethod
-	def parseCondition(stringCond, driverName=None):
-		return ParseEngine._getDriver(driverName)._parseCondition(stringCond)
-	
-	@staticmethod
-	def craftCondition(condition, driverName=None):
-		return ParseEngine._getDriver(driverName).craftCondition(condition)
+
+# This calls should not be here. Instead, use parseRule in the persistence drivers if required.
+#	@staticmethod
+#	def parseCondition(stringCond, driverName=None):
+#		return ParseEngine._getDriver(driverName)._parseCondition(stringCond)
+#	
+#	@staticmethod
+#	def craftCondition(condition, driverName=None):
+#		return ParseEngine._getDriver(driverName).craftCondition(condition)
 
 
