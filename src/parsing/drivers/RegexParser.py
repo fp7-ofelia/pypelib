@@ -87,9 +87,9 @@ class RegexParser():
 				elif string[iterator] == ')':
 					counter-=1
 				if counter== 0 and  ( string[iterator] == '&' and string[iterator+1] == '&' ):
-					return "&&", string[0:iterator], string[iterator+2:len(string)],neg
+					return "&&", string[(0+3*int(neg)):iterator], string[iterator+2:len(string)],neg
 				elif counter == 0 and (  string[iterator] == '|' and string[iterator+1] == '|' ):
-					return "||", string[0:iterator], string[iterator+2:len(string)],neg
+					return "||", string[(0+3*int(neg)):iterator], string[iterator+2:len(string)],neg
 			
 			
 		return None,None,None,None
