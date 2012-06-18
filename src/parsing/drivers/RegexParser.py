@@ -12,8 +12,9 @@ from pyparsing import nestedExpr
 	RegexParser class
 '''
 
-from Rule import *
-from Condition import *
+from pypelib.Rule import *
+from pypelib.Condition import *
+
 
 
 '''RegexParser class'''
@@ -73,27 +74,35 @@ class RegexParser():
 		return s 
 	@staticmethod
 	def _parseComplexCond(string):
-		#In case of complex condition it will always be, as it is stripped, (something) 
-		#re has some limitations on this
-		match = re.match(r'[\s]*(not)?[\s]*\((?P<left>.+)\)[\s]*(?P<operand>&&|\|\|)[\s]*\((?P<right>.+)\)[\s]*\Z', string,re.IGNORECASE)
-		neg="" 
-		if match:
-			neg=match.group(1) != None
-			counter = 0			 
-			#Complex cond
-			for iterator in range(0,len(string)-1):
-				if string[iterator] == '(':
-					counter+=1
-				elif string[iterator] == ')':
-					counter-=1
-				if counter== 0 and  ( string[iterator] == '&' and string[iterator+1] == '&' ):
-					return "&&", string[(0+3*int(neg)):iterator], string[iterator+2:len(string)],neg
-				elif counter == 0 and (  string[iterator] == '|' and string[iterator+1] == '|' ):
-					return "||", string[(0+3*int(neg)):iterator], string[iterator+2:len(string)],neg
-			
-			
-		return None,None,None,None
+                #In case of complex condition it will always be, as it is stripped, (something) 
+                #re has some limitations on this
+		
+		string = string.replace("not(","not (")
+                match = re.match(r'[\s]*(not[\s])?[\s]*\((?P<left>.+)\)[\s]*(?P<operand>&&|\|\|)[\s]*\((?P<right>.+)\)[\s]*\Z', string,re.IGNORECASE)
+                neg=""
+                if match:
+                        neg=match.group(1) != None
+                        counter = 0
+                        #Complex cond
+                        for iterator in range(0,len(string)-1):
+                                if string[iterator] == '(':
+                                        counter+=1
+                                elif string[iterator] == ')':
+                                        counter-=1
+                                if counter== 0 and  ( string[iterator] == '&' and string[iterator+1] == '&' ):
+                                        if neg:
+                                                return "&&", string[0:iterator].replace("not","",1), string[iterator+2:len(string)],neg
+                                        else:
+                                                return "&&", string[0:iterator], string[iterator+2:len(string)],neg
+#                                       return "&&", string[(0+3*int(neg)):iterator], string[iterator+2:len(string)],neg
+                                elif counter == 0 and (  string[iterator] == '|' and string[iterator+1] == '|' ):
+                                        if neg:
+                                                return "||", string[0:iterator].replace("not","",1), string[iterator+2:len(string)],neg
+                                        else:
+                                                return "||", string[0:iterator], string[iterator+2:len(string)],neg
+#                                       return "||", string[(0+3*int(neg)):iterator], string[iterator+2:len(string)],neg
 
+                return None,None,None,None
  
 	@staticmethod
 	def _parseCondition(string):
@@ -107,15 +116,26 @@ class RegexParser():
 			return Condition(RegexParser._parseCondition(leftOP),RegexParser._parseCondition(rightOP),op,neg)
 		else:
 			#Simple conditions
+<<<<<<< HEAD
 			match0 = re.match(r'[\s]*(not)?[\s]*([^()\s]+)[\s]*(>=|<=)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
 			if match0:
                         	return Condition(RegexParser._getNumericValue(match0.group(2)),match0.group(4),RegexParser._getNumericValue(match0.group(3)),match0.group(1) != None)
 			match = re.match(r'[\s]*(not)?[\s]*([^()\s]+)[\s]*(=|!=|>|<)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
+=======
+			match0 = re.match(r'[\s]*(not[\s])?[\s]*([^()\s]+)[\s]*(>=|<=)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
+			if match0:
+                        	return Condition(RegexParser._getNumericValue(match0.group(2)),match0.group(4),RegexParser._getNumericValue(match0.group(3)),match0.group(1) != None)
+			match = re.match(r'[\s]*(not[\s])?[\s]*([^()\s]+)[\s]*(=|!=|>|<)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
+>>>>>>> f49fbd2fcd3cdf3633a489642bf0dfca9a493347
 			if match:
 				return Condition(RegexParser._getNumericValue(match.group(2)),match.group(4),RegexParser._getNumericValue(match.group(3)).replace(" ",""),match.group(1) != None)	
 			else:
 				#Ranges and collections
+<<<<<<< HEAD
 				match = re.match(r'[\s]*(not)?[\s]*(.+)[\s]+(in|not[\s]+in)[\s]+(collection|range)[\s]*(\{(.+)\}|\[(.+)\])[\s]*', conditionString,re.IGNORECASE)
+=======
+				match = re.match(r'[\s]*(not[\s])?[\s]*(.+)[\s]+(in|not[\s]+in)[\s]+(collection|range)[\s]*(\{(.+)\}|\[(.+)\])[\s]*', conditionString,re.IGNORECASE)
+>>>>>>> f49fbd2fcd3cdf3633a489642bf0dfca9a493347
 				if match:
 					negate = None
 					if re.match(r'[\s]*\[(.*)]',match.group(5)):
@@ -129,7 +149,6 @@ class RegexParser():
 					if match.group(4).lower() == "collection":
 						#is collection
 						submatch = re.match(r'[\s]*\{[\s]*(.*)[\s]*\}',match.group(5))
-							
 						if not submatch:
 							raise Exception("Error while parsing Rule(Condition).")
 						strings = submatch.group(1).split(",")
