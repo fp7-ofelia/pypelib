@@ -12,8 +12,8 @@ from pyparsing import nestedExpr
 	RegexParser class
 '''
 
-from pypelib.Rule import *
-from pypelib.Condition import *
+from Rule import *
+from Condition import *
 
 
 
@@ -116,26 +116,15 @@ class RegexParser():
 			return Condition(RegexParser._parseCondition(leftOP),RegexParser._parseCondition(rightOP),op,neg)
 		else:
 			#Simple conditions
-<<<<<<< HEAD
-			match0 = re.match(r'[\s]*(not)?[\s]*([^()\s]+)[\s]*(>=|<=)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
-			if match0:
-                        	return Condition(RegexParser._getNumericValue(match0.group(2)),match0.group(4),RegexParser._getNumericValue(match0.group(3)),match0.group(1) != None)
-			match = re.match(r'[\s]*(not)?[\s]*([^()\s]+)[\s]*(=|!=|>|<)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
-=======
 			match0 = re.match(r'[\s]*(not[\s])?[\s]*([^()\s]+)[\s]*(>=|<=)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
 			if match0:
                         	return Condition(RegexParser._getNumericValue(match0.group(2)),match0.group(4),RegexParser._getNumericValue(match0.group(3)),match0.group(1) != None)
 			match = re.match(r'[\s]*(not[\s])?[\s]*([^()\s]+)[\s]*(=|!=|>|<)[\s]*([^()\s]+)[\s]*', conditionString,re.IGNORECASE)
->>>>>>> f49fbd2fcd3cdf3633a489642bf0dfca9a493347
 			if match:
 				return Condition(RegexParser._getNumericValue(match.group(2)),match.group(4),RegexParser._getNumericValue(match.group(3)).replace(" ",""),match.group(1) != None)	
 			else:
 				#Ranges and collections
-<<<<<<< HEAD
-				match = re.match(r'[\s]*(not)?[\s]*(.+)[\s]+(in|not[\s]+in)[\s]+(collection|range)[\s]*(\{(.+)\}|\[(.+)\])[\s]*', conditionString,re.IGNORECASE)
-=======
 				match = re.match(r'[\s]*(not[\s])?[\s]*(.+)[\s]+(in|not[\s]+in)[\s]+(collection|range)[\s]*(\{(.+)\}|\[(.+)\])[\s]*', conditionString,re.IGNORECASE)
->>>>>>> f49fbd2fcd3cdf3633a489642bf0dfca9a493347
 				if match:
 					negate = None
 					if re.match(r'[\s]*\[(.*)]',match.group(5)):

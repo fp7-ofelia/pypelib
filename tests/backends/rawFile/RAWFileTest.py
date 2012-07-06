@@ -24,7 +24,7 @@ RAWFile.save(myTable, "RegexParser",fileName="/tmp/myTable.dat")
 
 time.sleep(3)
 
-myTable2 = RAWFile.load("myTable",None,fileName="/tmp/myTable.dat")
+myTable2 = RAWFile.load("myTable",None,None,fileName="/tmp/myTable.dat")
 	
 
 print "Objects equal:"+str(myTable==myTable2)

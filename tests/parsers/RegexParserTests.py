@@ -41,4 +41,5 @@ print "\n\nCOMPLEX:"
 parseDumpAndCraft(" if  ( (a>5) && (B = 5)) && ((a<4)&&(b!=5))   then accept nonterminal do something denyMessage ksdfkdfskf # comment")
 parseDumpAndCraft(" if   ( (( (a>5) && (B = 5)) || (a=b) ) && ((a<4)&&(b!=5)))   then deny do something denyMessage ksdfkdfskf # comment")
 parseDumpAndCraft(" if   ( (( (a>5) && (B in range [2,3])) || (a=b) ) && ((a<4)&&(b!=5)))   then accept nonterminal do something denyMessage ksdfkdfskf # comment")
-
+parseDumpAndCraft(" if   ( (( (a>5) && (B in collection {element1,element2,element3})) || (a=b) ) && ((a<4)&&(b!=5)))   then accept nonterminal do something denyMessage ksdfkdfskf # comment")
+parseDumpAndCraft(" if  ( ( A < 5 ) && ( B in collection {element1, element2, element3} ) ) || ( not ( not a = b ) && ( ( a < 4 ) && ( b != 5 ) ) ) then accept nonterminal do something denyMessage ksdfkdfskf # comment")

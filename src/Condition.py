@@ -131,11 +131,14 @@ class Condition():
 				return " %s %s in range {%s} "%(negate,self._leftOperand,str(self._rightOperand))
 
 		if ( Collection.isCollection(self._rightOperand) ):
+			negate = ""
+			if self._negate:
+				negate="not "
 			rightOp = "collection {" 
 			for item in self._rightOperand:
 				rightOp = rightOp + str(item) + ","
 			rightOp = rightOp[:-1] + "}"
-			self._rightOperand = rightOp
+			return " %s %s in %s "%(negate,self._leftOperand,rightOp)
 
 		if Condition.isCondition(self._leftOperand):
 			negate = ""
