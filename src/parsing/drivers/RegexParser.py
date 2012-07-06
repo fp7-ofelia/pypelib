@@ -258,10 +258,10 @@ class RegexParser():
 			string+="do %s "%rule.getMatchAction()
 		#ErrorMsg action
 		if rule.getErrorMsg():
-			string+="denyMessage %s "%rule.getErrorMsg()
+			string+="denyMessage %s "%rule.getErrorMsg().rstrip()
 		#Description
 		if rule.getDescription():
-			string+="#%s "%rule.getDescription()
+			string+="#%s "%rule.getDescription().rstrip()
 
 		return string
 
