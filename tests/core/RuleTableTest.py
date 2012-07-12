@@ -2,7 +2,7 @@ import sys
 from random import * 
 sys.path.append("../../src/") 
 
-from RuleTable import RuleTable 
+from pypelib.RuleTable import RuleTable 
 
 
 _mappings = {"vm.Name":"metaObj['Name']",

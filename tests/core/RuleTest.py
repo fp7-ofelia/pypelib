@@ -2,8 +2,8 @@ import sys
 from random import * 
 sys.path.append("../../src/") 
 
-from Rule import Rule
-from parsing.drivers.RegexParser import RegexParser 
+from pypelib.Rule import Rule
+from pypelib.parsing.drivers.RegexParser import RegexParser 
 
 
 #parser.parseCondition("A not      in collection  {B}")

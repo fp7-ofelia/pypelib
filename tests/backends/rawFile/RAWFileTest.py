@@ -6,11 +6,10 @@ try:
 except:
    import pickle
  
-sys.path.append("../../../src/") 
+sys.path.append("../../../src/pypelib/") 
 
-#from persistence.drivers.rawfile.RAWFile_old import RAWFile
-from persistence.backends.rawfile.RAWFile import RAWFile
-from RuleTable import RuleTable
+from pypelib.persistence.backends.rawfile.RAWFile import RAWFile
+from pypelib.RuleTable import RuleTable
 
 
 #Generate a simple RuleTable and store

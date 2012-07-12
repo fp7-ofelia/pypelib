@@ -2,7 +2,7 @@ import sys
 from random import * 
 sys.path.append("../../src/") 
 
-from Condition import Condition,Collection,Range 
+from pypelib.Condition import Condition,Collection,Range 
 
 _collectionOperators= ["in"]
 _logicalOperators = ["&&","||"]

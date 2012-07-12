@@ -4,7 +4,8 @@ import time
 import uuid
 
 '''
-        @author: msune
+        @author: msune,lbergesio,cbermudo,omoya
+	@organization: i2CAT, OFELIA FP7
 
 	ParseEngine	
 	Implementes driver-based parsing mechanism for rules

@@ -3,9 +3,11 @@ import sys
 import time
 import exceptions
 import uuid
+import logging
 
 '''
-        @author: msune,lbergesio
+        @author: msune,lbergesio,omoya
+	@organization: i2CAT, OFELIA FP7
 
 	PolicyEngine Rule class
 	Encapsulates logic of a simple Rule	 
@@ -13,6 +15,7 @@ import uuid
 
 from Condition import Condition
 from persistence.PersistenceEngine import PersistenceEngine
+logging.basicConfig(format='%(asctime)s %(message)s')
 
 class TerminalMatch(exceptions.Exception):
 	value = None
@@ -64,6 +67,9 @@ class Rule():
 		return self._matchAction
 	def getUUID(self):
 		return self._uuid
+	#setters
+	def setUUID(self,UUID):
+		self._uuid = UUID
 	
 	#Constructor
 	def __init__(self,condition,description,errorMsg,ruleType=POSITIVE_TERMINAL,action=None,uuid=None):
@@ -80,7 +86,7 @@ class Rule():
 		self._type = ruleType
 		self._description = description
 		self._errorMsg = errorMsg
-		self._uuid = uuid #Generate automatic Rule_uuid
+		self._uuid = uuid 
 
 	def dump(self):
 		#Debug dump
@@ -100,10 +106,14 @@ class Rule():
 		try:
 			result = self._condition.evaluate(metaObj,resolver)
 			#print "[DEBUG] Result was: "+str(result)
+			logging.debug('Result was: %s',str(result))
 		except Exception as e:
-			print "[ERROR] Error on rule:"+self.dump()
-			print "[ERROR] Exception:"+str(e)
-			print "[ERROR] Rule will be skipped!"
+			logging.error('Error on rule: %s',self.dump())
+			#print "[ERROR] Error on rule:"+self.dump()
+			logging.error('Exception: %s', str(e))
+			#print "[ERROR] Exception:"+str(e)
+			logging.error('Rule will be skiped!')
+			#print "[ERROR] Rule will be skipped!"
 			result = False
 		
 		#Testing:

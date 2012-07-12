@@ -7,12 +7,13 @@
 	Simple example simulating a Server remote method (e.g. rpc)
 '''
 import time
-
+import logging
 from SimpleXmlParser import SimpleXmlParser
 '''
 	RPC server interface, receives incomming request (in this example an XML request)
 	Throws exception containing the messages
 '''
+logging.basicConfig(format='%(asctime)s %(message)s')
 
 class MyInterface():
 	
@@ -23,7 +24,7 @@ class MyInterface():
 
 	@staticmethod
 	def remoteMethod(credential,request):
-		print request	
+		logging.info(request)	
 		try:
 			#"Parse" request	
 			dicReq = SimpleXmlParser.parse(request)
@@ -32,11 +33,11 @@ class MyInterface():
 			from MyPolicyEngine import MyPolicyEngine
 			returnV = MyPolicyEngine.verify(dicReq)
 		except Exception,e:
-			print e
+			logging.error(str(e))
 			returnV=False
-		print "VERIFICATION RESULT: "+str(returnV)
+		logging.info("VERIFICATION RESULT: %s",str(returnV))
 		
 		if returnV:
-			print"Doing some fancy stuff..."
+			logging.info("Doing some fancy stuff...")
 			time.sleep(2)
-			print "Request process ended" 
+			logging.info("Request process ended") 

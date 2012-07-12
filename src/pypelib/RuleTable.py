@@ -4,6 +4,8 @@ import time
 import exceptions
 import copy 
 from threading import Thread, Lock
+import logging
+
 try:
    import cPickle as pickle
 except:
@@ -11,6 +13,7 @@ except:
 
 '''
         @author: msune,lbergesio,omoya,cbermudo
+	@organization: i2CAT, OFELIA FP7
 
 	PolicyEngine RuleTable class
 	Encapsulates logic of a simple Rule Table 
@@ -19,6 +22,7 @@ from resolver.Resolver import Resolver
 from Rule import Rule,TerminalMatch
 from parsing.ParseEngine import *
 from persistence.PersistenceEngine import *
+logging.basicConfig(format='%(asctime)s %(message)s')
 
 class RuleEntry():
 	rule = None
@@ -92,6 +96,7 @@ class RuleTable():
 			parser = self._parser
 		
 		rule = ParseEngine.parseRule(string, parser)
+		rule.setUUID(uuid.uuid4().hex)
 		
 		with self._mutex:	
 			if pos > len(self._ruleSet):
@@ -225,7 +230,7 @@ class RuleTable():
 		try:
 			return PersistenceEngine.load(name,defaultPersistence, resolverMappings, defaultParser,**kwargs)
 		except Exception as e:
-			print "Unable to load RuleTable, generating a new one"
+			logging.error("Unable to load RuleTable, generating a new one")
 		return RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,**kwargs)
 
 	#Getters

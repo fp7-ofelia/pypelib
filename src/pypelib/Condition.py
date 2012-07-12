@@ -3,7 +3,8 @@ import sys
 import time
 
 '''
-        @author: msune
+        @author: msune,cbermudo,omoya
+	@organization: i2CAT, OFELIA FP7
 
 	PolicyEngine Condition class
 	Encapsulates logic of a simple condition	 

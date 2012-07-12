@@ -7,10 +7,11 @@ try:
 except:
    import pickle
 from threading import Thread, Lock
-from resolver.Resolver import Resolver
+from pypelib.resolver.Resolver import Resolver
 
 '''
         @author: lbergesio,omoya,cbermudo
+	@organization: i2CAT, OFELIA FP7
 
         RAWFile     
         Implementes persistence engine to a raw file for RuleTables

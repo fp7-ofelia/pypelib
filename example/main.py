@@ -3,8 +3,9 @@ import sys
 import time
 import exceptions
 import time
+import logging
 
-sys.path.append("../src/") 
+sys.path.append("../src/pypelib/") 
 
 '''
         @author: msune, lbergesio,cbermudo,omoya
@@ -18,34 +19,35 @@ from RuleTable import RuleTable
 from MyPolicyEngine import MyPolicyEngine
 from interface.interface import MyInterface
 
+logging.basicConfig(format='%(asctime)s %(message)s')
 def addRuleAndDump(rule):
 	if rule:
-		print "\nAdding a Rule to Policy Engine"
+		logging.info("\nAdding a Rule to Policy Engine")
 		MyPolicyEngine.getInstance().addRule(rule)
-	print "\nDumping table state..."
-	print "[RULETABLE]######################################################################"
+	logging.info("\nDumping table state...")
+	logging.info("[RULETABLE]######################################################################")
 	MyPolicyEngine.dump()
-	print "[RULETABLE]######################################################################\n"
+	logging.info("[RULETABLE]######################################################################\n")
 	time.sleep(5)
 
 def call(message,cred,xml):
 	#Simulating throwing first query to the interface
-	print "%s"%message
-	print "Message: ope"
+	logging.info("%s",message)
+	logging.info("Message: ope")
 	try:
-		print "Simulating query..."
+		logging.info("Simulating query...")
 		MyInterface.remoteMethod(cred,xml)
 	except Exception,e:
-		print "Query failed"
-		print str(e)
+		logging.error("Query failed")
+		logging.error(str(e))
 
-	print "-----"
+	logging.info("-----")
 	time.sleep(2)
 
 '''
 	Simulating instantiation of main engine, to call interface afterwards
 '''
-print "Dumping inital table state...\n"
+logging.info("Dumping inital table state...\n")
 addRuleAndDump(None)
 
 addRuleAndDump("if ( vm.RAM < 512 ) then accept do log denyMessage Memory is greater than 512 MB #Preventing VMs with more than 512 MB")
@@ -64,7 +66,7 @@ call("First query",credential,ope)
 call("Second query",credential,ope2)
 
 addRuleAndDump("if ( vm.RAM > 128 ) && (user.id = lbergesio) then deny denyMessage User is not able to instantiate VMs with more than 128 MB of memory #lbergesio specific rule")
-print "Now moving rule on top (will forbbid user)"
+logging.info("Now moving rule on top (will forbbid user)")
 MyPolicyEngine.getInstance().moveRule(0,index=1)
 addRuleAndDump(None)
 

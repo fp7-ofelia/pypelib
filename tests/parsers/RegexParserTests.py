@@ -3,7 +3,7 @@ import time
 from random import * 
 sys.path.append("../../src/") 
 
-from parsing.drivers.RegexParser import RegexParser
+from pypelib.parsing.drivers.RegexParser import RegexParser
 
 def parseDumpAndCraft(s):
 	rule =RegexParser.parseRule(s)

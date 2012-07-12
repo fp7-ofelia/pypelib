@@ -6,6 +6,7 @@ from threading import Thread, Lock
 
 '''
         @author: msune
+	@organization: i2CAT, OFELIA FP7
 
 	Resolver class
 	Attemps to resolve keywords agains values/actions through mappings	

@@ -3,7 +3,8 @@ import sys
 import time
 
 '''
-        @author: msune
+        @author: msune,omoya
+	@@organization: i2CAT, OFELIA FP7
 
 	Persistence engine	
 	Implementes driver-based persistence backend selection 
