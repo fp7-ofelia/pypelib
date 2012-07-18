@@ -144,7 +144,7 @@ class RuleTable():
 				index = self._getRuleIndex(rule)
 				if index == None:
 					raise Exception("Unable to find rule in the ruleSet")
-			self._ruleSet[index].enable = enable	
+			self._ruleSet[index].enabled = enable	
 			if self._persist:		
 				self.save()
 

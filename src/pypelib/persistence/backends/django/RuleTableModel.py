@@ -16,8 +16,8 @@ from django.db import models
 class PolicyRuleTableModel(models.Model):
         class Meta:
                 """RuleTable model class"""
-                app_label = 'vt_manager'
-		db_table = 'policyEngine_RuleTableModel'
+                app_label = 'pypelib'
+		db_table = 'pypelib_RuleTableModel'
 
         type = models.CharField(max_length = 16, default="") #terminal/non terminal
         uuid = models.CharField(max_length = 512, default="") # uuid
