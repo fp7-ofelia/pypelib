@@ -15,7 +15,7 @@ import logging
 
 from Condition import Condition
 from persistence.PersistenceEngine import PersistenceEngine
-logging.basicConfig(format='%(asctime)s %(message)s')
+from utils.Logger import Logger
 
 class TerminalMatch(exceptions.Exception):
 	value = None
@@ -29,8 +29,9 @@ class TerminalMatch(exceptions.Exception):
 	def __str__(self):
 		return "%s "%self.desc
 
-class Rule():
-
+class Rule():	
+	
+	logger = Logger.getLogger()
 	#Class Attributes
 	_condition = None 
 	_description = None 
@@ -105,19 +106,13 @@ class Rule():
 	def evaluate(self,metaObj,resolver):
 		try:
 			result = self._condition.evaluate(metaObj,resolver)
-			#print "[DEBUG] Result was: "+str(result)
-			logging.debug('Result was: %s',str(result))
+			Rule.logger.debug('Result was: %s',str(result))
 		except Exception as e:
-			logging.error('Error on rule: %s',self.dump())
-			#print "[ERROR] Error on rule:"+self.dump()
-			logging.error('Exception: %s', str(e))
-			#print "[ERROR] Exception:"+str(e)
-			logging.error('Rule will be skiped!')
-			#print "[ERROR] Rule will be skipped!"
+			Rule.logger.error('Error on rule: %s',self.dump())
+			Rule.logger.error('Exception: %s', str(e))
+			Rule.logger.error('Rule will be skiped!')
 			result = False
 		
-		#Testing:
-		#result = True		
 		if result: 
 			if self._matchAction != None:
 				resolver.resolve(self._matchAction,metaObj)
@@ -130,15 +125,3 @@ class Rule():
 	def getConditionDump(self):
 		return self.getCondition().dump()
 
-		
-	#def save(self, parser = _defaultParser, persistence = _defaultPersistence):
-		
-		#return PersistenceEngine.save(self, parser, persistence)
-		 
-
-#cond = Condition("5","6","<")
-#rule =Rule(cond,"Test",Rule.POSITIVE_TERMINAL)
-#try:
-#	rule.evaluate(None,None)
-#except Exception as e:
-#	print str(e)

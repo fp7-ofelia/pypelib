@@ -3,8 +3,9 @@ import sys
 import time
 import exceptions
 import copy 
-from threading import Thread, Lock
 import logging
+from threading import Thread, Lock
+
 
 try:
    import cPickle as pickle
@@ -20,9 +21,9 @@ except:
 '''
 from resolver.Resolver import Resolver 
 from Rule import Rule,TerminalMatch
-from parsing.ParseEngine import *
-from persistence.PersistenceEngine import *
-logging.basicConfig(format='%(asctime)s %(message)s')
+from parsing.ParseEngine import ParseEngine
+from persistence.PersistenceEngine import PersistenceEngine
+from utils.Logger import Logger
 
 class RuleEntry():
 	rule = None
@@ -33,6 +34,8 @@ class RuleEntry():
 		self.enabled = enabled
 
 class RuleTable():
+	
+	logger = Logger.getLogger()
 	uuid=None
 	name=None
 	_persist = None
@@ -230,7 +233,7 @@ class RuleTable():
 		try:
 			return PersistenceEngine.load(name,defaultPersistence, resolverMappings, defaultParser,**kwargs)
 		except Exception as e:
-			logging.error("Unable to load RuleTable, generating a new one")
+			RuleTable.logger.error("Unable to load RuleTable, generating a new one")
 		return RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,**kwargs)
 
 	#Getters

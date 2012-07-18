@@ -146,7 +146,6 @@ class RegexParser():
 						if not strings:
 							raise Exception("Error while parsing Rule(Condition). Substrings")
 						
-						#print "Will generate Condition: %s %s %s (%s)" %(str(match.group(2)),"in",str(Collection(strings)), str(negate))
 						
 						return Condition(match.group(2),Collection(strings),"in", negate )
 					else:
@@ -155,7 +154,6 @@ class RegexParser():
 						if not submatch:
 							raise Exception("Error while parsing Rule(Condition).")
 						
-						#print "Will generate Condition: %s %s %s (%s)"%(str(match.group(2)),str(operator),Range(submatch.group(2),submatch.group(3)), str(negate))
 					
 						return Condition(match.group(2),Range(submatch.group(2),submatch.group(3)),operator, negate)
 		raise Exception("Error while parsing Rule(Condition)")

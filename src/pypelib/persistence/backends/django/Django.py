@@ -17,12 +17,13 @@ from pypelib.parsing.ParseEngine import ParseEngine
 from pypelib.Rule import Rule
 from pypelib.RuleTable import*
 from pypelib.resolver.Resolver import Resolver
+from pypelib.utils.Logger import Logger
 
-logging.basicConfig(format='%(asctime)s %(message)s')
 
 #XXX: Django is required to run this driver
 class Django(): 
 	
+	logger = Logger.getLogger()
 	#Driver attributes
 	_types = ["Rule","RuleTable"]	
 
@@ -85,7 +86,7 @@ class Django():
 
 	@staticmethod
 	def load(tableName, mappings, parser ):
-		logging.info('Django.load')
+		Django.logger.info('Django.load')
 		try:
 			Table =  PolicyRuleTableModel.objects.get(name = tableName)
 		except:
@@ -99,7 +100,7 @@ class Django():
 	
 	@staticmethod
 	def loadRuleSet(table_uuid):
-		logging.debug('loading RuleSet...')
+		Django.logger.debug('loading RuleSet...')
 		try: 
 			ruleTable = PolicyRuleTableModel.objects.get(uuid=table_uuid)
 		except: 
