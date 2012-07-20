@@ -62,10 +62,8 @@ class Resolver():
 	
 	#Resolve a key
 	def resolve(self, key, metaObj):
-		#print "[DEBUG] resolving:"+str(key)
-		#print "[DEBUG] mappings:"+str(self._mappings)
 		with self._mutex:
-			if not isinstance(key,str):
+			if not (isinstance(key,str) or  isinstance(key,unicode)):
 				raise Exception("Only string keys are able to be resolved")
 
 			if key not in self._mappings:

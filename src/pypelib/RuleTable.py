@@ -4,9 +4,8 @@ import time
 import exceptions
 import copy 
 import logging
-import uuid
 from threading import Thread, Lock
-
+import uuid
 
 try:
    import cPickle as pickle
@@ -20,11 +19,11 @@ except:
 	PolicyEngine RuleTable class
 	Encapsulates logic of a simple Rule Table 
 '''
-from resolver.Resolver import Resolver 
-from Rule import Rule,TerminalMatch
-from parsing.ParseEngine import ParseEngine
-from persistence.PersistenceEngine import PersistenceEngine
-from utils.Logger import Logger
+from pypelib.resolver.Resolver import Resolver 
+from pypelib.Rule import Rule,TerminalMatch
+from pypelib.parsing.ParseEngine import ParseEngine
+from pypelib.persistence.PersistenceEngine import PersistenceEngine
+from pypelib.utils.Logger import Logger
 
 class RuleEntry():
 	rule = None
@@ -213,7 +212,10 @@ class RuleTable():
 							return True
 						else:
 							raise terminal
-			return self._policy	
+			if self._policy:
+				return self._policy
+			else:
+				raise Exception("Policy verification failed. Policy type is DENY")	
 
 	def save(self, pBackend=None,**kwargs):
 		if not pBackend:
