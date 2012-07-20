@@ -18,36 +18,37 @@ sys.path.append("../src/pypelib/")
 from RuleTable import RuleTable
 from MyPolicyEngine import MyPolicyEngine
 from interface.interface import MyInterface
+from utils.Logger import Logger
 
-logging.basicConfig(format='%(asctime)s %(message)s')
+logger = Logger.getLogger()
 def addRuleAndDump(rule):
 	if rule:
-		logging.info("\nAdding a Rule to Policy Engine")
+		logger.info("\nAdding a Rule to Policy Engine")
 		MyPolicyEngine.getInstance().addRule(rule)
-	logging.info("\nDumping table state...")
-	logging.info("[RULETABLE]######################################################################")
+	logger.info("\nDumping table state...")
+	logger.info("[RULETABLE]######################################################################")
 	MyPolicyEngine.dump()
-	logging.info("[RULETABLE]######################################################################\n")
+	logger.info("[RULETABLE]######################################################################\n")
 	time.sleep(5)
 
 def call(message,cred,xml):
 	#Simulating throwing first query to the interface
-	logging.info("%s",message)
-	logging.info("Message: ope")
+	logger.info("%s",message)
+	logger.info("Message: ope")
 	try:
-		logging.info("Simulating query...")
+		logger.info("Simulating query...")
 		MyInterface.remoteMethod(cred,xml)
 	except Exception,e:
-		logging.error("Query failed")
-		logging.error(str(e))
+		logger.error("Query failed")
+		logger.error(str(e))
 
-	logging.info("-----")
+	logger.info("-----")
 	time.sleep(2)
 
 '''
 	Simulating instantiation of main engine, to call interface afterwards
 '''
-logging.info("Dumping inital table state...\n")
+logger.info("Dumping inital table state...\n")
 addRuleAndDump(None)
 
 addRuleAndDump("if ( vm.RAM < 512 ) then accept do log denyMessage Memory is greater than 512 MB #Preventing VMs with more than 512 MB")
@@ -66,7 +67,7 @@ call("First query",credential,ope)
 call("Second query",credential,ope2)
 
 addRuleAndDump("if ( vm.RAM > 128 ) && (user.id = lbergesio) then deny denyMessage User is not able to instantiate VMs with more than 128 MB of memory #lbergesio specific rule")
-logging.info("Now moving rule on top (will forbbid user)")
+logger.info("Now moving rule on top (will forbbid user)")
 MyPolicyEngine.getInstance().moveRule(0,index=1)
 addRuleAndDump(None)
 

@@ -1,6 +1,6 @@
 
 '''
-        @author: msune,lbergesio
+        @author: msune,lbergesio, omoya
 
 	Simple example Policy Engine simualting a Server interface (e.g. rpc)
  
@@ -8,7 +8,7 @@
 
 from threading import Thread, Lock
 from RuleTable import RuleTable 
-from Logger import Logger
+from utils.Logger import Logger
 from interface.interface import MyInterface
 
 '''
@@ -21,6 +21,7 @@ class  MyPolicyEngine():
 	#kindof Singleton pattern
 	_instance = None
 	_mutex = Lock()
+	
 
 	#Mappings contains the basic association between keywords and objects, functions or static values
 	#Note that these mappings are ONLY defined by the lib user (programmer)	
@@ -28,8 +29,8 @@ class  MyPolicyEngine():
 			"vm.RAM":"metaObj['actions'][0]['vm']['RAM']",
 			"vm.HDD":"metaObj['actions'][0]['vm']['HDD']",
 			"vm.OS":"metaObj['actions'][0]['vm']['OS']",
-			"user.id":MyInterface.getUserId,
-			"log":Logger.log}
+			"user.id":"MyInterface.getUserId",
+			"log":"utils.Logger.getLogger()"}
 		
 	@staticmethod
 	def getInstance():

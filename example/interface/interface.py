@@ -1,4 +1,5 @@
-
+import sys
+sys.path.append("../../src/pypelib/")
 
 
 '''
@@ -9,11 +10,13 @@
 import time
 import logging
 from SimpleXmlParser import SimpleXmlParser
+from utils.Logger import Logger
+
 '''
 	RPC server interface, receives incomming request (in this example an XML request)
 	Throws exception containing the messages
 '''
-logging.basicConfig(format='%(asctime)s %(message)s')
+logger = Logger.getLogger()
 
 class MyInterface():
 	
@@ -24,7 +27,7 @@ class MyInterface():
 
 	@staticmethod
 	def remoteMethod(credential,request):
-		logging.info(request)	
+		logger.info(request)	
 		try:
 			#"Parse" request	
 			dicReq = SimpleXmlParser.parse(request)
@@ -33,11 +36,11 @@ class MyInterface():
 			from MyPolicyEngine import MyPolicyEngine
 			returnV = MyPolicyEngine.verify(dicReq)
 		except Exception,e:
-			logging.error(str(e))
+			logger.error(str(e))
 			returnV=False
-		logging.info("VERIFICATION RESULT: %s",str(returnV))
+		logger.info("VERIFICATION RESULT: %s",str(returnV))
 		
 		if returnV:
-			logging.info("Doing some fancy stuff...")
+			logger.info("Doing some fancy stuff...")
 			time.sleep(2)
-			logging.info("Request process ended") 
+			logger.info("Request process ended") 
