@@ -73,7 +73,7 @@ class Django():
 			ruleModel.RuleTableName = obj.name
 			ruleModel.Rule = ParseEngine.craftRule(rule.rule, obj._parser)
 			ruleModel.RuleIsEnabled = rule.enabled
-			ruleModel.RulePosition = obj._ruleSet.index(rule)
+			ruleModel.RulePosition = int(obj._ruleSet.index(rule))
 			ruleModel.save()
 		#if the save() comes from a removeRule, check which one was removed and delete
 		if not addRule:

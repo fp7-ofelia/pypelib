@@ -29,7 +29,7 @@ class  MyPolicyEngine():
 			"vm.RAM":"metaObj['actions'][0]['vm']['RAM']",
 			"vm.HDD":"metaObj['actions'][0]['vm']['HDD']",
 			"vm.OS":"metaObj['actions'][0]['vm']['OS']",
-			"user.id":"MyInterface.getUserId",
+			"user.id":MyInterface.getUserId,
 			"log":"utils.Logger.getLogger()"}
 		
 	@staticmethod

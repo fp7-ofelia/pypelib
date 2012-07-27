@@ -23,7 +23,7 @@ class PolicyRuleModel(models.Model):
 	RuleTableName = models.CharField(max_length = 512, default="", blank = True, null = True )#Table Name
 	Rule = models.CharField(max_length = 2048, default="", blank =True, null =True)
 	RuleIsEnabled = models.BooleanField()# Enabled or disabled Rule
-	RulePosition = models.CharField(max_length = 512, default = "")#Position in RuleSet
+	RulePosition = models.IntegerField()#Position in RuleSet
 
 
 
