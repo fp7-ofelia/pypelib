@@ -6,16 +6,16 @@ import uuid
 import logging
 
 '''
-        @author: msune,lbergesio,omoya
+        @author: msune,lbergesio,omoya,CarolinaFernandez
 	@organization: i2CAT, OFELIA FP7
 
 	PolicyEngine Rule class
 	Encapsulates logic of a simple Rule	 
 '''
 
-from Condition import Condition
-from persistence.PersistenceEngine import PersistenceEngine
-from utils.Logger import Logger
+from pypelib.Condition import Condition
+from pypelib.persistence.PersistenceEngine import PersistenceEngine
+from pypelib.utils.Logger import Logger
 
 class TerminalMatch(exceptions.Exception):
 	value = None
@@ -75,10 +75,9 @@ class Rule():
 	#Constructor
 	def __init__(self,condition,description,errorMsg,ruleType=POSITIVE_TERMINAL,action=None,uuid=None):
 		if not isinstance(condition,Condition):
-			raise Exception("condition object must be an instance of Condition")
+			raise Exception("Object must be an instance of Condition")
 		if ruleType not in self._types:
-			raise Exception("Unknown rule type" )
-		
+			raise Exception("Unknown rule type")
 		if action == None and (ruleType == self.NEGATIVE_NONTERMINAL or ruleType == self.POSITIVE_NONTERMINAL):
 			raise Exception("You cannot create non-terminal actionless rules")	
 

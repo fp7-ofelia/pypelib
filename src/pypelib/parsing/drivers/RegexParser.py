@@ -13,8 +13,8 @@ from pyparsing import nestedExpr
 	RegexParser class
 '''
 
-from Rule import *
-from Condition import *
+from pypelib.Rule import *
+from pypelib.Condition import *
 
 
 

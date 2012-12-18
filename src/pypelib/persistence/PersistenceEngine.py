@@ -3,7 +3,7 @@ import sys
 import time
 
 '''
-        @author: msune,omoya
+        @author: msune,omoya,CarolinaFernandez
 	@@organization: i2CAT, OFELIA FP7
 
 	Persistence engine	
@@ -52,3 +52,20 @@ class PersistenceEngine():
 	@staticmethod
 	def load(tableName, pBackend, resolverMappings, parser=None, **kwargs):
 		return PersistenceEngine._getDriver(pBackend).load(tableName, resolverMappings, parser, **kwargs)
+
+        '''
+        Retrieves every Driver's PolicyRuleTable object for a given name.
+        This method should be seldom used.
+        '''
+	@staticmethod
+	def loadAll(tableName, pBackend):
+		return PersistenceEngine._getDriver(pBackend).loadAll(tableName)
+
+        '''
+        Deletes a Driver's PolicyRuleTable object for a given ID.
+        This method should be seldom used.
+        '''
+        @staticmethod
+        def delete(tableID, pBackend):
+                return PersistenceEngine._getDriver(pBackend).delete(tableID)
+

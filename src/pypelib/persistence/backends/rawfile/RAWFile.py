@@ -2,7 +2,6 @@ import os
 import sys
 import time
 import copy
-sys.path.append('../../')
 try:
    import cPickle as pickle
 except:

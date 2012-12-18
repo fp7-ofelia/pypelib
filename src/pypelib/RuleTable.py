@@ -13,7 +13,7 @@ except:
    import pickle
 
 '''
-        @author: msune,lbergesio,omoya,cbermudo
+        @author: msune,lbergesio,omoya,cbermudo,CarolinaFernandez
 	@organization: i2CAT, OFELIA FP7
 
 	PolicyEngine RuleTable class
@@ -24,6 +24,7 @@ from pypelib.Rule import Rule,TerminalMatch
 from pypelib.parsing.ParseEngine import ParseEngine
 from pypelib.persistence.PersistenceEngine import PersistenceEngine
 from pypelib.utils.Logger import Logger
+from pypelib.utils.Exceptions import *
 
 class RuleEntry():
 	rule = None
@@ -235,9 +236,30 @@ class RuleTable():
 	def loadOrGenerate(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType=False, uuid=None,**kwargs):
 		try:
 			return PersistenceEngine.load(name,defaultPersistence, resolverMappings, defaultParser,**kwargs)
+		except ZeroPolicyObjectsReturned:
+			RuleTable.logger.warning("Unable to load RuleTable, generating a new one")
+			return RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,**kwargs)
+		except MultiplePolicyObjectsReturned:
+			RuleTable.logger.warning("Unable to load a single RuleTable, asking the user")
+			raise MultiplePolicyObjectsReturned
 		except Exception as e:
-			RuleTable.logger.error("Unable to load RuleTable, generating a new one")
-		return RuleTable(name,resolverMappings,defaultParser, defaultPersistence, defaultPersistenceFlag, pType, uuid,**kwargs)
+			RuleTable.logger.error("Unable to load RuleTable. Exception: %s" % str(e))
+
+        '''
+        Retrieves every Engine's PolicyRuleTable object for a given name.
+        This method should be seldom used.
+        '''
+	@staticmethod
+	def loadAll(name, defaultPersistence):
+		return PersistenceEngine.loadAll(name, defaultPersistence)
+
+        '''
+        Deletes a Engine's PolicyRuleTable object for a given ID.
+        This method should be seldom used.
+        '''
+        @staticmethod
+        def delete(tableID, defaultPersistence):
+                return PersistenceEngine.delete(tableID, defaultPersistence)
 
 	#Getters
         def getRuleSet(self):
