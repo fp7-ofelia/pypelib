@@ -16,8 +16,8 @@ from django.db import models
 class PolicyRuleModel(models.Model):
 	class Meta:
 		"""Machine exportable class"""
-		app_label = 'pypelib'
-		db_table = 'pypelib_RuleModel'
+                app_label = 'pypelib'
+                db_table = 'pypelib_RuleModel'
 
 	RuleUUID = models.CharField(max_length = 512, default="") # uuid
 	RuleTableName = models.CharField(max_length = 512, default="", blank = True, null = True )#Table Name
