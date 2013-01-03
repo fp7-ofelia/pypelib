@@ -99,7 +99,7 @@ class Django():
 		except MultipleObjectsReturned:
 			raise MultiplePolicyObjectsReturned("[Django Driver] There are multiple tables with name: " + tableName)
 		except Exception as e:
-			raise Exception("[Django Driver] Some error occurred when trying to fetch table table with name: " + tableName + ". Exception: " + e)
+			raise Exception("[Django Driver] Some error occurred when trying to fetch table table with name: " + tableName + ". Exception: " + str(e))
 
 		ruleTable = RuleTable(Table.name,mappings,Table.defaultParser, Table.defaultPersistence,False, eval(Table.type), Table.uuid)
 		ruleTable._ruleSet = Django.loadRuleSet(Table.uuid)
@@ -135,7 +135,7 @@ class Django():
 				PolicyRuleModel.objects.filter(RuleTableName=table.name).delete()
 			table.delete()
                 except Exception as e:
-                        Django.logger.warning('[Django Driver] Could not delete the PolicyRuleTable object with ID: %s. Exception: %s' % (tableID,e))
+                        Django.logger.warning('[Django Driver] Could not delete the PolicyRuleTable object with ID: %s. Exception: %s' % (tableID,str(e)))
 
 	@staticmethod
 	def loadRuleSet(table_uuid):
