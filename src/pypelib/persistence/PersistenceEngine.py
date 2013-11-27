@@ -18,7 +18,7 @@ class PersistenceEngine():
         _defaultPersistence = "Django"
 
 	#Drivers
-	_drivers = ["Django","RAWFile"]
+	_drivers = ["Django","RAWFile","SQLAlchemy"]
 
 	#Fill with appropiate path
 	PATH_TO_DRIVERS="backends"
@@ -40,6 +40,13 @@ class PersistenceEngine():
 			try:
 				exec('from ' + PATH + ' import RAWFile')
 				return RAWFile
+			except:
+				raise Exception(driverName + ' persistence driver not found in ' + PersistenceEngine.PATH_TO_DRIVERS)
+		elif driverName == "SQLAlchemy":
+			PATH = PersistenceEngine.PATH_TO_DRIVERS + '.sqlalchemy.SQLAlchemy'
+			try:
+				exec('from ' + PATH + ' import SQLAlchemy')
+				return SQLAlchemy
 			except:
 				raise Exception(driverName + ' persistence driver not found in ' + PersistenceEngine.PATH_TO_DRIVERS)
 		else:
