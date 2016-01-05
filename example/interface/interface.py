@@ -10,7 +10,7 @@ sys.path.append("../../src/pypelib/")
 import time
 import logging
 from SimpleXmlParser import SimpleXmlParser
-from utils.Logger import Logger
+from pypelib.utils.Logger import Logger
 
 '''
 	RPC server interface, receives incomming request (in this example an XML request)

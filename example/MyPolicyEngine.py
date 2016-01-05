@@ -7,8 +7,8 @@
 '''
 
 from threading import Thread, Lock
-from RuleTable import RuleTable 
-from utils.Logger import Logger
+from pypelib.RuleTable import RuleTable 
+from pypelib.utils.Logger import Logger
 from interface.interface import MyInterface
 
 '''
